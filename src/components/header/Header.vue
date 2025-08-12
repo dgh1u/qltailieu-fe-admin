@@ -1,0 +1,127 @@
+<template>
+  <div class="flex justify-between items-center w-full relative shadow p-4">
+    <!-- Hiển thị icon và tiêu đề trang bên trái -->
+    <div class="flex items-center gap-3 text-2xl pt-3">
+      <component :is="currentPageIcon" class="w-6 h-6 pb-0.5 text-gray-700" />
+      <span>{{ currentPageTitle }}</span>
+    </div>
+
+    <!--  Thông tin người dùng bên phải -->
+    <div class="flex items-center gap-4">
+      <span class="text-gray-700 text-lg">{{ fullName }}</span>
+
+      <!-- Dropdown Avatar -->
+      <div class="relative">
+        <div @click="toggleDropdown" class="cursor-pointer">
+          <img
+            v-if="avatarUrl"
+            :src="avatarUrl"
+            alt="Avatar"
+            class="w-9 h-9 rounded-full object-cover"
+          />
+          <div
+            v-else
+            class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center"
+          >
+            <span class="text-gray-700">?</span>
+          </div>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div
+          v-if="isDropdownOpen"
+          class="absolute right-0 mt-2 w-46 bg-white border border-gray-200 rounded-lg shadow-lg p-2 py-2 space-y-1 z-50 isolate"
+        >
+          <button
+            @click="logout"
+            class="w-full flex items-center gap-2 px-2 py-2 text-left text-red-600 rounded-lg transition hover:bg-red-200"
+          >
+            <LogOut class="w-5 h-5 pb-0.5 text-red-600" />
+            <span class="text-red-600 font-semibold">Đăng xuất</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../../stores/store";
+import {
+  LogOut,
+  CircleUserRound,
+  Home,
+  Users,
+  Wallet,
+  ChartPie,
+  Activity,
+  House,
+  ShoppingBasket,
+  Truck,
+  Utensils,
+  Store,
+  FileText,
+} from "lucide-vue-next";
+
+const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+
+// Thêm computed property lấy avatar từ store (giống Header.vue)
+const avatarUrl = computed(() => authStore.avatar);
+
+const pageTitles = {
+  "/home/dashboard": { title: "TỔNG QUAN", icon: ChartPie },
+  "/home/action": { title: "HOẠT ĐỘNG", icon: Activity },
+  "/home/user": { title: "NGƯỜI DÙNG", icon: Users },
+  "/home/payment": { title: "NẠP TIỀN", icon: Wallet },
+  "/home/post/motel": { title: "TIN ĐĂNG NHÀ TRỌ", icon: House },
+  "/home/post/food-beverage": {
+    title: "TIN ĐĂNG ĂN UỐNG",
+    icon: Utensils,
+  },
+  "/home/post/store-utility": {
+    title: "TIN ĐĂNG CỬA HÀNG - TIỆN ÍCH",
+    icon: Store,
+  },
+  "/home/post/document": {
+    title: "TIN ĐĂNG TÀI LIỆU",
+    icon: FileText,
+  },
+};
+
+//  Xác định trang hiện tại
+const currentPageTitle = computed(
+  () => pageTitles[route.path]?.title || "Trang chính"
+);
+
+//  Xác định icon trang hiện tại
+const currentPageIcon = computed(() => pageTitles[route.path]?.icon || Home);
+
+//  Lấy thông tin user từ Pinia (Cập nhật tự động khi đăng nhập)
+const fullName = computed(() => authStore.user?.fullName || "Người dùng");
+// Bạn vẫn có thể sử dụng currentUser nếu cần cho các mục đích khác
+const currentUser = computed(() => authStore.user);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+
+//  Toggle dropdown menu
+const isDropdownOpen = ref(false);
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+//  Logout
+const logout = async () => {
+  try {
+    await authStore.logout();
+    isDropdownOpen.value = false;
+    if (!authStore.isAuthenticated) {
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
+};
+</script>
