@@ -6,7 +6,7 @@
         <rect width="100%" height="100%" fill="white" />
 
         <image
-          href="@/assets/vnua-logo.jpg"
+          href="@/assets/library-big.svg"
           x="40"
           y="70"
           height="70"
@@ -14,7 +14,7 @@
         />
 
         <text
-          x="65%"
+          x="60%"
           y="55%"
           font-family="Impact"
           font-size="41"
@@ -24,14 +24,14 @@
           VNUA
         </text>
         <text
-          x="65%"
+          x="60%"
           y="68%"
           font-family="'Peanut Butter', cursive"
           font-size="28"
           fill="black"
           text-anchor="middle"
         >
-          Services
+          Docs
         </text>
       </svg>
     </div>

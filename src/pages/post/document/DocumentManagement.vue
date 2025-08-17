@@ -103,24 +103,8 @@
           {{ index + 1 + pagination.pageSize * (pagination.current - 1) }}
         </template>
 
-        <template v-if="column.key === 'motel'">
-          <span
-            :style="{
-              color:
-                record.accomodationDTO &&
-                record.accomodationDTO.motel === 'TAI_LIEU'
-                  ? 'green'
-                  : 'black',
-              fontWeight: 'bold',
-            }"
-          >
-            {{
-              record.accomodationDTO &&
-              record.accomodationDTO.motel === "TAI_LIEU"
-                ? "Tài liệu"
-                : "Không xác định"
-            }}
-          </span>
+        <template v-if="column.key === 'major'">
+          {{ record.accomodationDTO.major }}
         </template>
 
         <template v-if="column.key === 'secondMotel'">
@@ -235,7 +219,7 @@ export default {
       { title: "ID", dataIndex: "id", key: "id" },
 
       { title: "Tiêu đề", dataIndex: "title", key: "title" },
-      { title: "Loại hình", dataIndex: "motel", key: "motel" },
+      { title: "Chuyên ngành", dataIndex: "major", key: "major" },
       { title: "Phân loại", dataIndex: "secondMotel", key: "secondMotel" },
       { title: "Ngày tạo", dataIndex: "createAt", key: "createAt" },
       { title: "Trạng thái", key: "approved" },
