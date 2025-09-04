@@ -11,8 +11,8 @@
       <div class="flex gap-4">
         <a-input
           v-model:value="searchText"
-          placeholder="Nhập Tiêu đề bài viết..."
-          style="width: 300px"
+          placeholder="Nhập Tiêu đề tài liệu..."
+          style="width: 200px"
           allowClear
           class="custom-search"
           @input="handleSearch"
@@ -24,12 +24,13 @@
 
         <!-- Bộ lọc Phân loại Tài liệu -->
         <a-select
-          v-if="selectedDocumentType === 'TAI_LIEU'"
+          
           v-model:value="selectedSecondMotel"
           placeholder="Phân loại"
           style="width: 150px"
           @change="handleFilterChange"
         >
+        <a-select-option :value="null">Tất cả</a-select-option>
           <a-select-option value="Giáo trình">Giáo trình</a-select-option>
           <a-select-option value="Sách tham khảo"
             >Sách tham khảo</a-select-option
@@ -47,6 +48,44 @@
             >Bài báo khoa học</a-select-option
           >
           <a-select-option value="Tài liệu khác">Tài liệu khác</a-select-option>
+        </a-select>
+
+        <!-- Bộ lọc Chuyên ngành-->
+        <a-select
+          
+          v-model:value="selectedMajor"
+          placeholder="Phân loại"
+          style="width: 150px"
+          @change="handleFilterChange"
+        >
+        <a-select-option :value="null">Tất cả</a-select-option>
+          <a-select-option value="Thú y">Thú y</a-select-option>
+              <a-select-option value="Chăn nuôi - Thủy sản"
+                >Chăn nuôi - Thủy sản</a-select-option
+              >
+              <a-select-option value="Cơ điện">Cơ điện</a-select-option>
+              <a-select-option value="Công nghệ thông tin"
+                >Công nghệ thông tin</a-select-option
+              >
+              <a-select-option value="Kinh tế">Kinh tế</a-select-option>
+              <a-select-option value="Công nghệ sinh học"
+                >Công nghệ sinh học</a-select-option
+              >
+              <a-select-option value="Công nghệ thực phẩm"
+                >Công nghệ thực phẩm</a-select-option
+              >
+              <a-select-option value="Nông học">Nông học</a-select-option>
+              <a-select-option value="Khoa học môi trường"
+                >Khoa học môi trường</a-select-option
+              >
+              <a-select-option value="Xã hội học">Xã hội học</a-select-option>
+              <a-select-option value="Ngôn ngữ">Ngôn ngữ</a-select-option>
+              <a-select-option value="Du lịch">Du lịch</a-select-option>
+              <a-select-option value="Sư phạm">Sư phạm</a-select-option>
+              <a-select-option value="Quản lý đất đai"
+                >Quản lý đất đai</a-select-option
+              >
+              <a-select-option value="Sư phạm">Sư phạm</a-select-option>
         </a-select>
 
         <!-- Bộ lọc trạng thái -->
@@ -77,8 +116,8 @@
         <!-- Bộ lọc theo UserId -->
         <a-input
           v-model:value="selectedUserId"
-          placeholder="userId..."
-          style="width: 90px"
+          placeholder="Nhập ID người đăng..."
+          style="width: 200px"
           @input="handleFilterChange"
         >
           <template #prefix>
@@ -93,9 +132,14 @@
       :columns="columns"
       :data-source="posts"
       :loading="loading"
-      :pagination="pagination"
+      :pagination="{
+        ...pagination,
+        align: 'center',
+        position: ['bottomCenter']
+      }"
       row-key="id"
       @change="handleTableChange"
+      class="custom-table"
     >
       <template #bodyCell="{ column, record, index }">
         <!-- STT -->
@@ -204,7 +248,7 @@ export default {
       current: 1,
       pageSize: 6,
       total: 0,
-      showTotal: (total, range) => `Tổng cộng: ${total} bản ghi`,
+      showTotal: (total, range) => `Tổng cộng: ${total} tài liệu`,
     });
     const showDocumentDetailPopup = ref(false);
     const selectedPostId = ref(null);
@@ -212,6 +256,8 @@ export default {
     const selectedDel = ref(null); // Định nghĩa lọc Hiển thị
     const selectedDocumentType = ref(null); // Định nghĩa lọc Loại hình
     const selectedSecondMotel = ref(null);
+    const selectedMajor = ref(null); // Định nghĩa lọc Chuyên ngành
+
 
     // Cấu hình các cột cho bảng
     const columns = [
@@ -220,7 +266,7 @@ export default {
 
       { title: "Tiêu đề", dataIndex: "title", key: "title" },
       { title: "Chuyên ngành", dataIndex: "major", key: "major" },
-      { title: "Phân loại", dataIndex: "secondMotel", key: "secondMotel" },
+      { title: "Loại tài liệu", dataIndex: "secondMotel", key: "secondMotel" },
       { title: "Ngày tạo", dataIndex: "createAt", key: "createAt" },
       { title: "Trạng thái", key: "approved" },
       { title: "Người đăng", key: "user" },
@@ -274,6 +320,11 @@ export default {
           params.secondMotel = selectedSecondMotel.value;
         }
 
+        // Lọc theo Chuyên ngành
+        if (selectedMajor.value) {
+          params.major = selectedMajor.value;
+        }
+
         // Log dữ liệu lọc gửi đi
         console.log("Params gửi đi:", params);
         const res = await getListPost(params);
@@ -318,17 +369,17 @@ export default {
     // Xác nhận và xóa bài viết
     const confirmDelete = (record) => {
       Modal.confirm({
-        title: "Xóa bài viết",
-        content: "Bạn có chắc chắn muốn xóa bài viết này?",
+        title: "Xóa tài liệu",
+        content: "Bạn có chắc chắn muốn xóa tài liệu này?",
         okText: "Xóa",
         cancelText: "Hủy",
         async onOk() {
           try {
             await deletePost(record.id);
-            message.success("Xóa bài viết thành công");
+            message.success("Xóa tài liệu thành công");
             fetchPosts();
           } catch {
-            message.error("Xóa thất bại");
+            message.error("Xóa tài liệu thất bại");
           }
         },
       });
@@ -357,7 +408,38 @@ export default {
       selectedDocumentType,
       selectedDel,
       selectedSecondMotel,
+      selectedMajor,
     };
   },
 };
 </script>
+
+<style scoped>
+.ant-pagination .ant-pagination-total-text {
+  float: left;
+}
+
+/* Custom header styling cho bảng */
+:deep(.custom-table .ant-table-thead > tr > th) {
+  background-color: #374151 !important; /* gray-800 */
+  color: white !important;
+  border-bottom: 1px solid #374151 !important;
+  font-weight: 600;
+}
+
+/* Đảm bảo màu không đổi khi hover */
+:deep(.custom-table .ant-table-thead > tr > th:hover) {
+  background-color: #374151 !important;
+  color: white !important;
+}
+
+/* Tùy chỉnh cho sorter icon nếu có */
+:deep(.custom-table .ant-table-thead > tr > th .ant-table-column-sorter) {
+  color: white !important;
+}
+
+/* Tùy chỉnh cho filter icon nếu có */
+:deep(.custom-table .ant-table-thead > tr > th .ant-table-filter-trigger) {
+  color: white !important;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <section class="p-8 space-y-6 bg-[#F5F7FF] min-h-screen">
+  <section class="p-8 space-y-6 bg-gray-50 min-h-screen">
     <!-- Dòng đầu: Mô tả và bộ chọn -->
     <div class="flex justify-between items-start mb-4">
       <div>
@@ -12,60 +12,20 @@
         </p>
       </div>
 
-      <!-- Bộ chọn -->
-      <div class="flex gap-4 flex-wrap items-center">
-        <!-- Chọn năm -->
-        <div>
-          <select
-            v-model="selectedYear"
-            @change="fetchRevenueAndBuildData"
-            class="bg-white rounded-xl p-2 text-sm"
-          >
-            <option v-for="y in availableYears" :key="y" :value="y">
-              {{ y }}
-            </option>
-          </select>
-        </div>
-        <!-- Chế độ -->
-        <div>
-          <select
-            v-model="groupMode"
-            @change="fetchRevenueAndBuildData"
-            class="bg-white rounded-xl p-2 text-sm"
-          >
-            <option value="year">Theo năm</option>
-            <option value="month">Theo tháng</option>
-          </select>
-        </div>
-        <!-- Tháng -->
-        <div v-if="groupMode === 'month'">
-          <select
-            v-model="selectedMonth"
-            @change="fetchRevenueAndBuildData"
-            class="bg-white rounded-xl p-2 text-sm"
-          >
-            <option
-              v-for="m in availableMonths"
-              :key="m.value"
-              :value="m.value"
-            >
-              {{ m.label }}
-            </option>
-          </select>
-        </div>
-      </div>
+      
+      
     </div>
 
     <!-- Phần giữa: Hình minh họa và 4 box thống kê -->
     <div class="flex flex-col md:flex-row gap-6">
       <!-- Desc image (trái) -->
       <div
-        class="flex-1 bg-white shadow rounded-xl flex items-center justify-center"
+        class="flex-1 bg-sky-50 shadow rounded-xl flex items-center justify-center"
       >
         <img
-          src="@/assets/admin-dashboard-1.png"
+          src="@/assets/logo.png"
           alt="Desc"
-          class="object-contain rounded-lg"
+          class="object-contain rounded-lg w-80 h-80"
         />
       </div>
 
@@ -79,52 +39,44 @@
             {{ summary?.totalUsers }}
           </span>
         </div>
-        <!-- Box: Total Payments -->
-        <div class="shadow rounded-xl p-4 flex flex-col bg-amber-100">
-          <IconBanknote class="w-8 h-8 text-green-500 mb-2" />
-          <span class="t font-semibold text-gray-600">Giao dịch</span>
-          <span class="text-2xl font-bold text-gray-800 mt-4">
-            {{ summary?.totalPayments }}
-          </span>
-        </div>
+        
         <!-- Box: Total Posts -->
         <div class="bg-cyan-100 shadow rounded-xl p-4 flex flex-col">
           <IconFileText class="w-8 h-8 text-yellow-500 mb-2" />
-          <span class="t font-semibold text-gray-600">Bài viết</span>
+          <span class="t font-semibold text-gray-600">Tài liệu</span>
           <span class="text-2xl font-bold text-gray-800 mt-4">
             {{ summary?.totalPosts }}
           </span>
         </div>
-        <!-- Box: Total Revenue -->
-        <div class="bg-rose-100 shadow rounded-xl p-4 flex flex-col">
-          <IconDollarSign class="w-8 h-8 text-indigo-500 mb-2" />
-          <span class="t font-semibold text-gray-600">Doanh thu</span>
-          <span class="text-2xl font-bold text-gray-800 mt-4">
-            <!-- Sử dụng computed property để format số -->
-            {{ formattedTotalRevenue }}₫
-          </span>
-        </div>
+        
       </div>
     </div>
 
-    <!-- Phần dưới: 2 biểu đồ, chia làm 2 cột -->
-    <div class="flex flex-col md:flex-row gap-6">
-      <!-- Biểu đồ Doanh Thu (Line/Area Chart) -->
-      <div class="flex-1 bg-white shadow rounded-xl p-6">
-        <span class="text-xl font-bold text-gray-800 mb-4">Doanh Thu</span>
-        <LineChart
-          :chart-data="revenueChartData"
-          :chart-options="revenueChartOptions"
-          class="h-72"
-        />
+    <!-- Phần dưới: Biểu đồ thống kê số bài post theo thời gian -->
+  
+
+    <!-- Add chart section -->
+    <div class="bg-white rounded-lg shadow p-6 mt-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-lg font-semibold">Thống kê bài viết theo tháng</h2>
+        <div class="flex items-center gap-4">
+          <select 
+            v-model="selectedYear" 
+            class="form-select rounded-md border-gray-300"
+          >
+            <option v-for="year in availableYears" :key="year" :value="year">
+              Năm {{ year }}
+            </option>
+          </select>
+        </div>
       </div>
-      <!-- Biểu đồ Số Giao Dịch (Bar Chart) -->
-      <div class="flex-1 bg-white shadow rounded-xl p-6">
-        <span class="text-xl font-bold text-gray-800 mb-4">Giao Dịch</span>
-        <BarChart
-          :chart-data="transactionChartData"
-          :chart-options="transactionChartOptions"
-          class="h-72"
+
+      <!-- Chart Container -->
+      <div class="h-[400px] relative">
+        <LineChart
+          v-if="postChartData"
+          :chart-data="postChartData"
+          :options="chartOptions"
         />
       </div>
     </div>
@@ -164,7 +116,10 @@ const selectedYear = ref(new Date().getFullYear());
 const selectedMonth = ref(1);
 
 // Available years, months
-const availableYears = ref([2023, 2024, 2025]);
+const availableYears = computed(() => {
+  const currentYear = new Date().getFullYear();
+  return Array.from({length: 5}, (_, i) => currentYear - 2 + i);
+});
 const availableMonths = ref([
   { value: 1, label: "Tháng 1" },
   { value: 2, label: "Tháng 2" },
@@ -180,6 +135,48 @@ const availableMonths = ref([
   { value: 12, label: "Tháng 12" },
 ]);
 
+// Chart options
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        stepSize: 1
+      }
+    },
+    x: {
+      grid: {
+        display: false
+      }
+    }
+  },
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top'
+    },
+    tooltip: {
+      mode: 'index',
+      intersect: false
+    }
+  }
+};
+
+// Post chart data
+const postChartData = ref({
+  labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+  datasets: [{
+    label: 'Số lượng bài viết',
+    backgroundColor: '#3B82F6',
+    borderColor: '#3B82F6',
+    data: Array(12).fill(0),
+    tension: 0.4,
+    fill: false
+  }]
+});
+
 async function fetchPendingPosts() {
   try {
     // Truyền params: approved = true và notApproved = true
@@ -192,66 +189,61 @@ async function fetchPendingPosts() {
   }
 }
 
-// Computed property để format tổng doanh thu theo kiểu xx.xxx.xxx
-const formattedTotalRevenue = computed(() => {
-  console.log("Giá trị summary:", summary.value);
-  if (summary.value && summary.value.totalRevenue != null) {
-    const formatted = new Intl.NumberFormat("vi-VN").format(
-      summary.value.totalRevenue
-    );
-    console.log("Giá trị formattedTotalRevenue:", formatted);
-    return formatted;
+// Thống kê số liệu bài viết của người dùng theo ngày/tháng
+const fetchUserPostStats = async () => {
+  try {
+    const start = `${selectedYear.value}-01-01`;
+    const end = `${selectedYear.value}-12-31`;
+
+    console.log('API Request Params:', {
+      start,
+      end,
+      groupBy: 'month'
+    });
+
+    const response = await axios.get('/api/dashboard/post-stats', {
+      params: {
+        start,
+        end,
+        groupBy: 'month'
+      }
+    });
+
+    if (response) {
+      const monthlyData = Array(12).fill(0);
+      
+      response.forEach(item => {
+        const month = parseInt(item.groupKey.split('-')[1]) - 1; // Convert to 0-based index
+        monthlyData[month] = item.totalPosts;
+      });
+
+      postChartData.value = {
+        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+        datasets: [{
+          label: 'Số lượng bài viết',
+          backgroundColor: '#3B82F6',
+          borderColor: '#3B82F6',
+          data: monthlyData,
+          tension: 0.4,
+          fill: false
+        }]
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching post statistics:', error);
   }
-  return "";
-});
-
-// Biểu đồ Doanh Thu
-const revenueChartData = ref({
-  labels: [],
-  datasets: [
-    {
-      label: "Doanh thu",
-      data: [],
-      fill: true,
-      backgroundColor: "rgba(75,192,192,0.4)",
-      borderColor: "rgba(75,192,192,1)",
-      tension: 0.4,
-    },
-  ],
-});
-const revenueChartOptions = ref({
-  responsive: true,
-  maintainAspectRatio: false,
-});
-
-// Biểu đồ Số Giao Dịch
-const transactionChartData = ref({
-  labels: [],
-  datasets: [
-    {
-      label: "Số Giao Dịch",
-      data: [],
-      backgroundColor: "rgba(135, 206, 250, 1)",
-      borderWidth: 1,
-      borderRadius: 8,
-    },
-  ],
-});
-const transactionChartOptions = ref({
-  responsive: true,
-  maintainAspectRatio: false,
-});
+};
 
 // Lifecycle
 onMounted(async () => {
+  console.log('Component mounted');
   await fetchSummary();
-  await fetchRevenueAndBuildData();
+  console.log('Summary fetched:', summary.value);
+  
   await fetchPendingPosts();
-});
-
-// Watch thay đổi
-watch([groupMode, selectedYear, selectedMonth], async () => {
-  await fetchRevenueAndBuildData();
+  console.log('Pending posts count:', pendingPostCount.value);
+  
+  await fetchUserPostStats();
 });
 
 // Gọi API summary
@@ -264,102 +256,22 @@ async function fetchSummary() {
   }
 }
 
-// Gọi API revenue
-async function fetchRevenue() {
-  let start = "",
-    end = "",
-    groupBy = "";
-  if (groupMode.value === "year") {
-    start = `${selectedYear.value}-01-01`;
-    end = `${selectedYear.value}-12-31`;
-    groupBy = "month";
-  } else {
-    // groupMode = "month"
-    const lastDay = new Date(
-      selectedYear.value,
-      selectedMonth.value,
-      0
-    ).getDate();
-    const monthStr =
-      selectedMonth.value < 10
-        ? "0" + selectedMonth.value
-        : selectedMonth.value;
-    start = `${selectedYear.value}-${monthStr}-01`;
-    end = `${selectedYear.value}-${monthStr}-${lastDay}`;
-    groupBy = "day";
-  }
-  try {
-    const res = await axios.get("/api/dashboard/revenue", {
-      params: { start, end, groupBy },
-    });
-    revenueData.value = res;
-  } catch (error) {
-    console.error("Error fetching revenue:", error);
-  }
-}
-
-// Build chart data
-async function fetchRevenueAndBuildData() {
-  await fetchRevenue();
-  buildChartData();
-}
-
-function buildChartData() {
-  // Tạo expectedLabels
-  let expectedLabels = [];
-  if (groupMode.value === "year") {
-    for (let i = 1; i <= 12; i++) {
-      expectedLabels.push(i < 10 ? "0" + i : "" + i);
-    }
-  } else {
-    // groupMode = "month"
-    const lastDay = new Date(
-      selectedYear.value,
-      selectedMonth.value,
-      0
-    ).getDate();
-    for (let i = 1; i <= lastDay; i++) {
-      expectedLabels.push(i < 10 ? "0" + i : "" + i);
-    }
-  }
-
-  // Tạo map các giá trị doanh thu và giao dịch dựa trên key
-  let revenueMap = {};
-  let transactionMap = {};
-  revenueData.value.forEach((item) => {
-    const rawKey = item.groupKey;
-    let parsedKey = "";
-    if (groupMode.value === "year") {
-      // "2025-06" => "06"
-      parsedKey = rawKey.split("-")[1];
-    } else {
-      // "2025-06-15" => "15"
-      parsedKey = rawKey.split("-")[2];
-    }
-    revenueMap[parsedKey] = item.totalRevenue;
-    transactionMap[parsedKey] = item.transactionCount;
+// Thêm vào watch để theo dõi thay đổi
+watch([groupMode, selectedYear, selectedMonth], () => {
+  console.log('Filter changed:', {
+    groupMode: groupMode.value,
+    selectedYear: selectedYear.value,
+    selectedMonth: selectedMonth.value
   });
+  fetchUserPostStats();
+});
 
-  const revenueSeries = expectedLabels.map((label) =>
-    revenueMap[label] !== undefined ? revenueMap[label] : 0
-  );
-  const transactionSeries = expectedLabels.map((label) =>
-    transactionMap[label] !== undefined ? transactionMap[label] : 0
-  );
-
-  // Cập nhật dữ liệu cho biểu đồ
-  revenueChartData.value.labels = expectedLabels;
-  revenueChartData.value.datasets[0].data = revenueSeries;
-
-  transactionChartData.value.labels = expectedLabels;
-  transactionChartData.value.datasets[0].data = transactionSeries;
-}
+// Watch for year changes
+watch(selectedYear, () => {
+  fetchUserPostStats();
+});
 </script>
 
 <style scoped>
-/* Ví dụ tùy biến Tailwind nếu cần:
-.bg-white { background-color: #fff; }
-.shadow { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-.rounded-xl { border-radius: 0.5rem; }
-*/
+
 </style>

@@ -16,7 +16,7 @@
       <Header />
 
       <!-- Nội dung trang  -->
-      <div class="flex-1 overflow-auto">
+      <div class="flex-1 overflow-auto bg-gray-100">
         <router-view />
       </div>
     </div>

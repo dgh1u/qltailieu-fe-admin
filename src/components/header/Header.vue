@@ -1,14 +1,14 @@
 <template>
   <div class="flex justify-between items-center w-full relative shadow p-4">
     <!-- Hiển thị icon và tiêu đề trang bên trái -->
-    <div class="flex items-center gap-3 text-2xl pt-3">
+    <div class="flex items-center gap-3 font-semibold text-xl pt-3">
       <component :is="currentPageIcon" class="w-6 h-6 pb-0.5 text-gray-700" />
       <span>{{ currentPageTitle }}</span>
     </div>
 
     <!--  Thông tin người dùng bên phải -->
     <div class="flex items-center gap-4">
-      <span class="text-gray-700 text-lg">{{ fullName }}</span>
+      
 
       <!-- Dropdown Avatar -->
       <div class="relative">
@@ -41,6 +41,7 @@
           </button>
         </div>
       </div>
+      
     </div>
   </div>
 </template>
@@ -73,9 +74,9 @@ const authStore = useAuthStore();
 const avatarUrl = computed(() => authStore.avatar);
 
 const pageTitles = {
-  "/home/dashboard": { title: "TỔNG QUAN", icon: ChartPie },
-  "/home/action": { title: "HOẠT ĐỘNG", icon: Activity },
-  "/home/user": { title: "NGƯỜI DÙNG", icon: Users },
+  "/home/dashboard": { title: "Thống kê", icon: ChartPie },
+  "/home/action": { title: "Quản lý hoạt động", icon: Activity },
+  "/home/user": { title: "Quản lý người dùng", icon: Users },
   "/home/payment": { title: "NẠP TIỀN", icon: Wallet },
   "/home/post/motel": { title: "TIN ĐĂNG NHÀ TRỌ", icon: House },
   "/home/post/food-beverage": {
@@ -87,7 +88,7 @@ const pageTitles = {
     icon: Store,
   },
   "/home/post/document": {
-    title: "TIN ĐĂNG TÀI LIỆU",
+    title: "Quản lý tài liệu",
     icon: FileText,
   },
 };

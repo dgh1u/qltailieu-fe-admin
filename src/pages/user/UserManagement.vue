@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 pt-12">
+  <div class="p-4 pt-12 bg-gray-100">
     <AddUser v-model:open="showAddUserPopup" @user-added="fetchUsers" />
     <UserDetail v-model:open="showUserDetailPopup" :userId="selectedUserId" />
     <EditUser
@@ -12,7 +12,7 @@
       <div class="flex gap-4">
         <a-input
           v-model:value="searchText"
-          placeholder="Nhập Họ tên..."
+          placeholder="Nhập Họ tên người dùng ..."
           allowClear
           style="width: 300px"
           class="custom-search"
@@ -24,7 +24,6 @@
         </a-input>
 
         <!-- Bộ lọc trạng thái -->
-
         <a-select
           v-model:value="selectedStatus"
           placeholder="Lọc theo trạng thái"
@@ -35,6 +34,7 @@
           <a-select-option :value="'false'">Hoạt động</a-select-option>
           <a-select-option :value="'true'">Bị khóa</a-select-option>
         </a-select>
+        
         <!-- Bộ lọc vai trò -->
         <a-select
           v-model:value="selectedRole"
@@ -60,9 +60,13 @@
       :columns="columns"
       :data-source="users"
       :loading="loading"
-      :pagination="pagination"
+      :pagination="{ 
+        ...pagination,
+        align: 'center'
+      }"
       row-key="id"
       @change="handleTableChange"
+      class="custom-table"
     >
       <template #bodyCell="{ column, record, index }">
         <!-- STT -->
@@ -71,7 +75,6 @@
         </template>
 
         <!-- Vai trò -->
-
         <template v-if="column.key === 'role'">
           <span
             :style="{
@@ -111,6 +114,7 @@
     </a-table>
   </div>
 </template>
+
 <script>
 import { ref, onMounted } from "vue";
 import { deleteUser, getListUser } from "@/apis/userService";
@@ -148,7 +152,8 @@ export default {
       current: 1,
       pageSize: 6,
       total: 0,
-      showTotal: (total, range) => `Tổng cộng: ${total} bản ghi`,
+      showTotal: (total, range) => `Tổng cộng: ${total} người dùng`,
+      position: ['bottomCenter']  // Thêm dòng này
     });
     const router = useRouter();
     const showAddUserPopup = ref(false);
@@ -174,11 +179,9 @@ export default {
       { title: "STT", key: "stt" },
       { title: "ID", dataIndex: "id", key: "id" },
       { title: "Họ tên", dataIndex: "fullName", key: "fullName" },
-
       { title: "Vai trò", key: "role" },
       { title: "Địa chỉ", dataIndex: "address", key: "address" },
       { title: "Số điện thoại", dataIndex: "phone", key: "phone" },
-
       { title: "Trạng thái", dataIndex: "block", key: "block" },
       { title: "Hành động", key: "action", width: 140 },
     ];
@@ -279,8 +282,33 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .ant-pagination .ant-pagination-total-text {
   float: left;
+}
+
+/* Custom header styling cho bảng */
+:deep(.custom-table .ant-table-thead > tr > th) {
+  background-color: #374151 !important; /* gray-800 */
+  color: white !important;
+  border-bottom: 1px solid #374151 !important;
+  font-weight: 600;
+}
+
+/* Đảm bảo màu không đổi khi hover */
+:deep(.custom-table .ant-table-thead > tr > th:hover) {
+  background-color: #374151 !important;
+  color: white !important;
+}
+
+/* Tùy chỉnh cho sorter icon nếu có */
+:deep(.custom-table .ant-table-thead > tr > th .ant-table-column-sorter) {
+  color: white !important;
+}
+
+/* Tùy chỉnh cho filter icon nếu có */
+:deep(.custom-table .ant-table-thead > tr > th .ant-table-filter-trigger) {
+  color: white !important;
 }
 </style>

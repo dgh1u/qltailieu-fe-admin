@@ -8,7 +8,7 @@
     <div class="create-post space-y-4">
       <!-- Tiêu đề tin đăng -->
       <div class="block flex items-center justify-center">
-        <span class="font-bold text-3xl text-teal-500">Chi tiết tin đăng</span>
+        <span class="font-bold text-4xl text-gray-800">Chi tiết tài liệu</span>
       </div>
 
       <!-- Thông tin Hình thức -->
@@ -16,17 +16,24 @@
         <div class="py-2">
           <span class="font-bold text-base">Hình thức</span>
         </div>
-        <label> Loại hình <span class="text-red-500">*</span> </label>
-        <div class="flex rounded-lg mt-1 p-2">
-          <span class="font-bold" :class="motelColor">{{ displayMotel }}</span>
-        </div>
+        
 
         <!-- Phân loại -->
         <div class="py-2">
-          <label>Phân loại</label>
+          <label>Loại tài liệu</label>
           <div class="flex rounded-lg mt-1 p-2">
             <span class="font-bold">{{
               formData.accomodation.secondMotel
+            }}</span>
+          </div>
+        </div>
+
+        <!-- Chuyên ngành -->
+          <div class="py-2">
+          <label>Chuyên ngành</label>
+          <div class="flex rounded-lg mt-1 p-2">
+            <span class="font-bold">{{
+              formData.accomodation.major
             }}</span>
           </div>
         </div>
@@ -135,20 +142,7 @@
           </div>
         </div>
 
-        <div class="py-2">
-          <label class="block text-gray-700">Chuyên ngành</label>
-          <div
-            class="flex items-center border border-gray-300 rounded-lg mt-1 w-50"
-          >
-            <input
-              v-model.number="formData.accomodation.major"
-              type="text"
-              placeholder="VD: 3500"
-              class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
-              disabled
-            />
-          </div>
-        </div>
+    
       </div>
 
       <!-- PHẦN TÀI LIỆU -->
@@ -260,68 +254,7 @@
         </div>
       </div>
 
-      <!-- PHẦN LINK THAM KHẢO -->
-      <div v-if="formData.accomodation.referenceUrl" class="pt-4">
-        <div class="block bg-white rounded-xl p-4">
-          <div class="py-2">
-            <span class="font-bold text-base">Link tham khảo</span>
-          </div>
-
-          <a
-            :href="formData.accomodation.referenceUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center p-4 bg-gradient-to-r from-teal-50 to-green-50 rounded-lg border border-teal-200 hover:border-teal-300 hover:shadow-md transition-all cursor-pointer group"
-          >
-            <!-- Link Icon -->
-            <div
-              class="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3"
-            >
-              <svg
-                class="w-6 h-6 text-teal-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                ></path>
-              </svg>
-            </div>
-
-            <!-- Link Info -->
-            <div class="flex-1 min-w-0">
-              <span
-                class="block text-teal-600 group-hover:text-teal-800 font-medium text-sm mb-1"
-              >
-                Đường dẫn tới tài liệu tham khảo
-              </span>
-              <p class="text-xs text-gray-500">Click để xem chi tiết</p>
-            </div>
-
-            <!-- External Link Icon -->
-            <div class="flex-shrink-0 ml-2">
-              <svg
-                class="w-4 h-4 text-teal-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                ></path>
-              </svg>
-            </div>
-          </a>
-        </div>
-      </div>
-
+      
       <!-- Các nút hành động -->
       <div class="pt-10" v-if="displayStatus === 'Chờ duyệt'">
         <div class="flex space-x-5">
