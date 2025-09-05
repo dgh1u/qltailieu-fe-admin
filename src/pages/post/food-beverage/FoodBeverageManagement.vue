@@ -129,22 +129,22 @@
           <span
             :style="{
               color:
-                record.accomodationDTO &&
-                record.accomodationDTO.motel === 'QUAN_AN'
+                record.criteriaDTO &&
+                record.criteriaDTO.motel === 'QUAN_AN'
                   ? 'green'
-                  : record.accomodationDTO &&
-                    record.accomodationDTO.motel === 'QUAN_NUOC'
+                  : record.criteriaDTO &&
+                    record.criteriaDTO.motel === 'QUAN_NUOC'
                   ? 'red'
                   : 'black',
               fontWeight: 'bold',
             }"
           >
             {{
-              record.accomodationDTO &&
-              record.accomodationDTO.motel === "QUAN_AN"
+              record.criteriaDTO &&
+              record.criteriaDTO.motel === "QUAN_AN"
                 ? "Quán ăn"
-                : record.accomodationDTO &&
-                  record.accomodationDTO.motel === "QUAN_NUOC"
+                : record.criteriaDTO &&
+                  record.criteriaDTO.motel === "QUAN_NUOC"
                 ? "Quán nước"
                 : "Không xác định"
             }}
@@ -152,7 +152,7 @@
         </template>
 
         <template v-if="column.key === 'secondMotel'">
-          {{ record.accomodationDTO.secondMotel }}
+          {{ record.criteriaDTO.secondMotel }}
         </template>
 
         <!-- Tiêu đề -->
@@ -310,7 +310,7 @@ export default {
           params.del = selectedDel.value;
         }
 
-        // Lọc theo Loại hình (accomodationDTO.motel)
+        // Lọc theo Loại hình (criteriaDTO.motel)
         if (selectedFoodBeverageType.value === "QUAN_AN") {
           params.motel = "QUAN_AN";
         } else if (selectedFoodBeverageType.value === "QUAN_NUOC") {

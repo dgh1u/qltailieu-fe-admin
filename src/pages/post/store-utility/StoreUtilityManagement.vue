@@ -134,22 +134,22 @@
           <span
             :style="{
               color:
-                record.accomodationDTO &&
-                record.accomodationDTO.motel === 'CUA_HANG'
+                record.criteriaDTO &&
+                record.criteriaDTO.motel === 'CUA_HANG'
                   ? 'green'
-                  : record.accomodationDTO &&
-                    record.accomodationDTO.motel === 'TIEN_ICH'
+                  : record.criteriaDTO &&
+                    record.criteriaDTO.motel === 'TIEN_ICH'
                   ? 'red'
                   : 'black',
               fontWeight: 'bold',
             }"
           >
             {{
-              record.accomodationDTO &&
-              record.accomodationDTO.motel === "CUA_HANG"
+              record.criteriaDTO &&
+              record.criteriaDTO.motel === "CUA_HANG"
                 ? "Cửa hàng"
-                : record.accomodationDTO &&
-                  record.accomodationDTO.motel === "TIEN_ICH"
+                : record.criteriaDTO &&
+                  record.criteriaDTO.motel === "TIEN_ICH"
                 ? "TIện ích"
                 : "Không xác định"
             }}
@@ -157,7 +157,7 @@
         </template>
 
         <template v-if="column.key === 'secondMotel'">
-          {{ record.accomodationDTO.secondMotel }}
+          {{ record.criteriaDTO.secondMotel }}
         </template>
 
         <!-- Tiêu đề -->
@@ -315,7 +315,7 @@ export default {
           params.del = selectedDel.value;
         }
 
-        // Lọc theo Loại hình (accomodationDTO.motel)
+        // Lọc theo Loại hình (criteriaDTO.motel)
         if (selectedStoreUtilityType.value === "CUA_HANG") {
           params.motel = "CUA_HANG";
         } else if (selectedStoreUtilityType.value === "TIEN_ICH") {

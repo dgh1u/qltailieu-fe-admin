@@ -148,11 +148,11 @@
         </template>
 
         <template v-if="column.key === 'major'">
-          {{ record.accomodationDTO.major }}
+          {{ record.criteriaDTO.major }}
         </template>
 
         <template v-if="column.key === 'secondMotel'">
-          {{ record.accomodationDTO.secondMotel }}
+          {{ record.criteriaDTO.secondMotel }}
         </template>
 
         <!-- Tiêu đề -->
@@ -312,7 +312,7 @@ export default {
           params.del = selectedDel.value;
         }
 
-        // Lọc theo Loại hình (accomodationDTO.motel)
+        // Lọc theo Loại hình (criteriaDTO.motel)
 
         params.motels = "TAI_LIEU";
 

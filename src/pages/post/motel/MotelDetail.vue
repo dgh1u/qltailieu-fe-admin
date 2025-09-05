@@ -127,7 +127,7 @@
           <label>Giá cho thuê</label>
           <div class="flex border border-gray-300 rounded-lg mt-1 w-120">
             <input
-              v-model.number="formData.accomodation.price"
+              v-model.number="formData.criteria.price"
               type="number"
               placeholder="VD: 1000000 (cho 1 triệu)"
               class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
@@ -145,7 +145,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-120"
           >
             <input
-              v-model.number="formData.accomodation.acreage"
+              v-model.number="formData.criteria.acreage"
               type="number"
               placeholder="Nhập diện tích"
               class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
@@ -160,7 +160,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-120"
           >
             <input
-              v-model.number="formData.accomodation.electricPrice"
+              v-model.number="formData.criteria.electricPrice"
               type="number"
               placeholder="VD: 3500"
               class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
@@ -175,7 +175,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-120"
           >
             <input
-              v-model.number="formData.accomodation.waterPrice"
+              v-model.number="formData.criteria.waterPrice"
               type="number"
               placeholder="VD: 30000"
               class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
@@ -188,7 +188,7 @@
 
       <!-- Thông tin Giới tính (áp dụng khi Motel là O_GHEP) -->
       <div
-        v-if="formData.accomodation.motel === 'O_GHEP'"
+        v-if="formData.criteria.motel === 'O_GHEP'"
         class="block bg-white rounded-xl p-4"
       >
         <div class="py-2">
@@ -229,7 +229,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-120"
           >
             <input
-              v-model="formData.accomodation.address"
+              v-model="formData.criteria.address"
               type="text"
               placeholder="VD: Số 12, Ngõ 34..."
               class="w-full p-2 mt-1 border border-gray-300 rounded-lg bg-gray-50"
@@ -264,24 +264,24 @@
             v-for="(feature, idx) in featureOptions"
             :key="idx"
             class="flex items-center p-2 rounded-lg"
-            :class="{ 'text-teal-500': formData.accomodation[feature.value] }"
+            :class="{ 'text-teal-500': formData.criteria[feature.value] }"
           >
             <div class="relative">
               <input
                 type="checkbox"
                 class="hidden"
-                :checked="formData.accomodation[feature.value]"
+                :checked="formData.criteria[feature.value]"
                 readonly
               />
               <div
                 class="w-5 h-5 border border-gray-300 rounded flex items-center justify-center"
                 :class="{
                   'bg-teal-500 border-teal-500':
-                    formData.accomodation[feature.value],
+                    formData.criteria[feature.value],
                 }"
               >
                 <CheckIcon
-                  v-if="formData.accomodation[feature.value]"
+                  v-if="formData.criteria[feature.value]"
                   class="w-3 h-3 text-white"
                 />
               </div>
@@ -400,14 +400,14 @@
         </div>
       </div>
       <!-- PHẦN LINK THAM KHẢO -->
-      <div v-if="formData.accomodation.referenceUrl" class="pt-4">
+      <div v-if="formData.criteria.referenceUrl" class="pt-4">
         <div class="block bg-white rounded-xl p-4">
           <div class="py-2">
             <span class="font-bold text-base">Link tham khảo</span>
           </div>
 
           <a
-            :href="formData.accomodation.referenceUrl"
+            :href="formData.criteria.referenceUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center p-4 bg-gradient-to-r from-teal-50 to-green-50 rounded-lg border border-teal-200 hover:border-teal-300 hover:shadow-md transition-all cursor-pointer group"
@@ -559,7 +559,7 @@ const formData = reactive({
   approved: false,
   notApproved: false,
   del: false,
-  accomodation: {
+  criteria: {
     motel: "",
     price: 0,
     acreage: 0,
@@ -612,7 +612,7 @@ const addressTimer = ref(null);
 const displayMapAddress = computed(() => mapAddress.value.trim() || "VNUA");
 
 watch(
-  () => formData.accomodation.address,
+  () => formData.criteria.address,
   (newAddress) => {
     if (addressTimer.value) clearTimeout(addressTimer.value);
     addressTimer.value = setTimeout(() => {
@@ -623,22 +623,22 @@ watch(
 
 // Computed property hiển thị Hình thức
 const displayMotel = computed(() => {
-  if (formData.accomodation.motel === "PHONG_TRO") return "Tìm phòng trọ";
-  if (formData.accomodation.motel === "O_GHEP") return "Tìm người ở ghép";
-  return formData.accomodation.motel;
+  if (formData.criteria.motel === "PHONG_TRO") return "Tìm phòng trọ";
+  if (formData.criteria.motel === "O_GHEP") return "Tìm người ở ghép";
+  return formData.criteria.motel;
 });
 
 // Computed property hiển thị Giới tính
 const displayGender = computed(() => {
-  if (formData.accomodation.gender === true) return "Nam";
-  if (formData.accomodation.gender === false) return "Nữ";
+  if (formData.criteria.gender === true) return "Nam";
+  if (formData.criteria.gender === false) return "Nữ";
   return "Không yêu cầu";
 });
 
 // Computed property hiển thị Khu vực
 const displayDistrict = computed(() => {
   const district = districtList.value.find(
-    (d) => d.id === formData.accomodation.idDistrict
+    (d) => d.id === formData.criteria.idDistrict
   );
   return district ? district.name : "";
 });
@@ -660,8 +660,8 @@ const displayVisibility = computed(() => (formData.del ? "Bị ẩn" : "Hiển t
 
 // Computed property định nghĩa màu chữ cho Hình thức
 const motelColor = computed(() => {
-  if (formData.accomodation.motel === "PHONG_TRO") return "text-green-500";
-  if (formData.accomodation.motel === "O_GHEP") return "text-red-500";
+  if (formData.criteria.motel === "PHONG_TRO") return "text-green-500";
+  if (formData.criteria.motel === "O_GHEP") return "text-red-500";
   return "";
 });
 
@@ -813,10 +813,10 @@ const fetchPostDetails = async (id) => {
     formData.approved = data.approved ?? false;
     formData.notApproved = data.notApproved ?? false;
     formData.del = data.del ?? false;
-    if (data.accomodationDTO) {
-      Object.assign(formData.accomodation, data.accomodationDTO);
-      if (data.accomodationDTO.district && data.accomodationDTO.district.id) {
-        formData.accomodation.idDistrict = data.accomodationDTO.district.id;
+    if (data.criteriaDTO) {
+      Object.assign(formData.criteria, data.criteriaDTO);
+      if (data.criteriaDTO.district && data.criteriaDTO.district.id) {
+        formData.criteria.idDistrict = data.criteriaDTO.district.id;
       }
     }
     // Nếu API trả về mảng hình ảnh thì cập nhật lại galleryImages

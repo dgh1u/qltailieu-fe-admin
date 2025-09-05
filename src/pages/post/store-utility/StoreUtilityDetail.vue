@@ -26,7 +26,7 @@
           <label>Phân loại</label>
           <div class="flex rounded-lg mt-1 p-2">
             <span class="font-bold">{{
-              formData.accomodation.secondMotel
+              formData.criteria.secondMotel
             }}</span>
           </div>
         </div>
@@ -141,7 +141,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-25"
           >
             <input
-              v-model.number="formData.accomodation.openHours"
+              v-model.number="formData.criteria.openHours"
               type="text"
               placeholder="VD: 3500"
               class="w-full p-2 border-none outline-none rounded-lg bg-gray-50"
@@ -174,7 +174,7 @@
             class="flex items-center border border-gray-300 rounded-lg mt-1 w-120"
           >
             <input
-              v-model="formData.accomodation.address"
+              v-model="formData.criteria.address"
               type="text"
               placeholder="VD: Số 12, Ngõ 34..."
               class="w-full p-2 mt-1 border border-gray-300 rounded-lg bg-gray-50"
@@ -308,14 +308,14 @@
         </div>
       </div>
       <!-- PHẦN LINK THAM KHẢO -->
-      <div v-if="formData.accomodation.referenceUrl" class="pt-4">
+      <div v-if="formData.criteria.referenceUrl" class="pt-4">
         <div class="block bg-white rounded-xl p-4">
           <div class="py-2">
             <span class="font-bold text-base">Link tham khảo</span>
           </div>
 
           <a
-            :href="formData.accomodation.referenceUrl"
+            :href="formData.criteria.referenceUrl"
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center p-4 bg-gradient-to-r from-teal-50 to-green-50 rounded-lg border border-teal-200 hover:border-teal-300 hover:shadow-md transition-all cursor-pointer group"
@@ -467,7 +467,7 @@ const formData = reactive({
   approved: false,
   notApproved: false,
   del: false,
-  accomodation: {
+  criteria: {
     motel: "",
     secondMotel: "",
     address: "",
@@ -493,7 +493,7 @@ const addressTimer = ref(null);
 const displayMapAddress = computed(() => mapAddress.value.trim() || "VNUA");
 
 watch(
-  () => formData.accomodation.address,
+  () => formData.criteria.address,
   (newAddress) => {
     if (addressTimer.value) clearTimeout(addressTimer.value);
     addressTimer.value = setTimeout(() => {
@@ -504,15 +504,15 @@ watch(
 
 // Computed property hiển thị Hình thức
 const displayMotel = computed(() => {
-  if (formData.accomodation.motel === "CUA_HANG") return "Cửa hàng";
-  if (formData.accomodation.motel === "TIEN_ICH") return "Tiện ích";
-  return formData.accomodation.motel;
+  if (formData.criteria.motel === "CUA_HANG") return "Cửa hàng";
+  if (formData.criteria.motel === "TIEN_ICH") return "Tiện ích";
+  return formData.criteria.motel;
 });
 
 // Computed property hiển thị Khu vực
 const displayDistrict = computed(() => {
   const district = districtList.value.find(
-    (d) => d.id === formData.accomodation.idDistrict
+    (d) => d.id === formData.criteria.idDistrict
   );
   return district ? district.name : "";
 });
@@ -534,8 +534,8 @@ const displayVisibility = computed(() => (formData.del ? "Bị ẩn" : "Hiển t
 
 // Computed property định nghĩa màu chữ cho Hình thức
 const motelColor = computed(() => {
-  if (formData.accomodation.motel === "CUA_HANG") return "text-green-500";
-  if (formData.accomodation.motel === "TIEN_ICH") return "text-red-500";
+  if (formData.criteria.motel === "CUA_HANG") return "text-green-500";
+  if (formData.criteria.motel === "TIEN_ICH") return "text-red-500";
   return "";
 });
 
@@ -688,10 +688,10 @@ const fetchPostDetails = async (id) => {
     formData.approved = data.approved ?? false;
     formData.notApproved = data.notApproved ?? false;
     formData.del = data.del ?? false;
-    if (data.accomodationDTO) {
-      Object.assign(formData.accomodation, data.accomodationDTO);
-      if (data.accomodationDTO.district && data.accomodationDTO.district.id) {
-        formData.accomodation.idDistrict = data.accomodationDTO.district.id;
+    if (data.criteriaDTO) {
+      Object.assign(formData.criteria, data.criteriaDTO);
+      if (data.criteriaDTO.district && data.criteriaDTO.district.id) {
+        formData.criteria.idDistrict = data.criteriaDTO.district.id;
       }
     }
     // Nếu API trả về mảng hình ảnh thì cập nhật lại galleryImages

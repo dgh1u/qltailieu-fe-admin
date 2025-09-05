@@ -23,7 +23,7 @@
           <label>Loại tài liệu</label>
           <div class="flex rounded-lg mt-1 p-2">
             <span class="font-bold">{{
-              formData.accomodation.secondMotel
+              formData.criteria.secondMotel
             }}</span>
           </div>
         </div>
@@ -33,7 +33,7 @@
           <label>Chuyên ngành</label>
           <div class="flex rounded-lg mt-1 p-2">
             <span class="font-bold">{{
-              formData.accomodation.major
+              formData.criteria.major
             }}</span>
           </div>
         </div>
@@ -354,7 +354,7 @@ const formData = reactive({
   approved: false,
   notApproved: false,
   del: false,
-  accomodation: {
+  criteria: {
     motel: "",
     secondMotel: "",
     address: "",
@@ -376,7 +376,7 @@ const mapAddress = ref("");
 const addressTimer = ref(null);
 
 watch(
-  () => formData.accomodation.address,
+  () => formData.criteria.address,
   (newAddress) => {
     if (addressTimer.value) clearTimeout(addressTimer.value);
     addressTimer.value = setTimeout(() => {
@@ -387,9 +387,9 @@ watch(
 
 // Computed property hiển thị Hình thức
 const displayMotel = computed(() => {
-  if (formData.accomodation.motel === "TAI_LIEU") return "Tài liệu";
+  if (formData.criteria.motel === "TAI_LIEU") return "Tài liệu";
 
-  return formData.accomodation.motel;
+  return formData.criteria.motel;
 });
 
 // Computed property cho trạng thái bài đăng
@@ -409,7 +409,7 @@ const displayVisibility = computed(() => (formData.del ? "Bị ẩn" : "Hiển t
 
 // Computed property định nghĩa màu chữ cho Hình thức
 const motelColor = computed(() => {
-  if (formData.accomodation.motel === "TAI_LIEU") return "text-green-500";
+  if (formData.criteria.motel === "TAI_LIEU") return "text-green-500";
 
   return "";
 });
@@ -563,10 +563,10 @@ const fetchPostDetails = async (id) => {
     formData.approved = data.approved ?? false;
     formData.notApproved = data.notApproved ?? false;
     formData.del = data.del ?? false;
-    if (data.accomodationDTO) {
-      Object.assign(formData.accomodation, data.accomodationDTO);
-      if (data.accomodationDTO.district && data.accomodationDTO.district.id) {
-        formData.accomodation.idDistrict = data.accomodationDTO.district.id;
+    if (data.criteriaDTO) {
+      Object.assign(formData.criteria, data.criteriaDTO);
+      if (data.criteriaDTO.district && data.criteriaDTO.district.id) {
+        formData.criteria.idDistrict = data.criteriaDTO.district.id;
       }
     }
     // Nếu API trả về mảng hình ảnh thì cập nhật lại galleryImages

@@ -92,22 +92,22 @@
           <span
             :style="{
               color:
-                record.accomodationDTO &&
-                record.accomodationDTO.motel === 'PHONG_TRO'
+                record.criteriaDTO &&
+                record.criteriaDTO.motel === 'PHONG_TRO'
                   ? 'green'
-                  : record.accomodationDTO &&
-                    record.accomodationDTO.motel === 'O_GHEP'
+                  : record.criteriaDTO &&
+                    record.criteriaDTO.motel === 'O_GHEP'
                   ? 'red'
                   : 'black',
               fontWeight: 'bold',
             }"
           >
             {{
-              record.accomodationDTO &&
-              record.accomodationDTO.motel === "PHONG_TRO"
+              record.criteriaDTO &&
+              record.criteriaDTO.motel === "PHONG_TRO"
                 ? "Phòng trọ"
-                : record.accomodationDTO &&
-                  record.accomodationDTO.motel === "O_GHEP"
+                : record.criteriaDTO &&
+                  record.criteriaDTO.motel === "O_GHEP"
                 ? "Ở ghép"
                 : "Không xác định"
             }}
@@ -267,7 +267,7 @@ export default {
           params.del = selectedDel.value;
         }
 
-        // Lọc theo Loại hình (accomodationDTO.motel)
+        // Lọc theo Loại hình (criteriaDTO.motel)
         if (selectedMotelType.value === "PHONG_TRO") {
           params.motel = "PHONG_TRO";
         } else if (selectedMotelType.value === "O_GHEP") {
