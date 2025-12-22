@@ -270,7 +270,7 @@ export default {
       { title: "Ngày tạo", dataIndex: "createAt", key: "createAt" },
       { title: "Trạng thái", key: "approved" },
       { title: "Người đăng", key: "user" },
-      { title: "Hiển thị", dataIndex: "del", key: "del" }, // Cột hiển thị
+     
       // Cột người đăng
       { title: "Hành động", key: "action", width: 96 },
     ];

@@ -41,7 +41,6 @@ const menuItems = [
   { label: "Hoạt động", path: "/home/action", icon: Activity },
   { label: "Người dùng", path: "/home/user", icon: Users },
   { label: "Tài liệu", path: "/home/post/document", icon: FileText },
-  //{ label: "Nạp tiền", path: "/home/payment", icon: Wallet },
 ];
 
 // Tất cả menu items (đã bỏ menu 2 tầng)

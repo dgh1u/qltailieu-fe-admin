@@ -77,7 +77,6 @@ const pageTitles = {
   "/home/dashboard": { title: "Thống kê", icon: ChartPie },
   "/home/action": { title: "Quản lý hoạt động", icon: Activity },
   "/home/user": { title: "Quản lý người dùng", icon: Users },
-  "/home/payment": { title: "NẠP TIỀN", icon: Wallet },
   "/home/post/motel": { title: "TIN ĐĂNG NHÀ TRỌ", icon: House },
   "/home/post/food-beverage": {
     title: "TIN ĐĂNG ĂN UỐNG",

@@ -1,124 +1,73 @@
 <template>
-  <section class="p-8 space-y-8 bg-gradient-to-br from-slate-50 via-white to-slate-50 min-h-screen">
-    <!-- Header Section -->
-    <div class="mb-8">
+  <section class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      <!-- Header Section -->
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-3xl font-light text-slate-800 mb-2">Chào mừng, {{ fullName }}</h1>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-            <p class="text-slate-500 text-sm">
-              Hệ thống đang hoạt động ổn định
-            </p>
-          </div>
+          <h1 class="text-2xl font-semibold text-gray-900">Chào mừng, {{ fullName }}</h1>
+         
         </div>
         
-        <div v-if="pendingPostCount > 0" class="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2">
-          <div class="flex items-center gap-2">
-            <div class="w-1.5 h-1.5 bg-amber-400 rounded-full"></div>
-            <span class="text-amber-700 text-sm font-medium">
-              {{ pendingPostCount }} bài viết chờ duyệt
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="grid lg:grid-cols-3 gap-8">
-      <!-- Logo Section -->
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-2xl border border-slate-200/60 p-8 h-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow duration-300">
-          <img
-            src="@/assets/logo.png"
-            alt="Logo"
-            class="object-contain w-48 h-48 opacity-90"
-          />
+        <div v-if="pendingPostCount > 0" class="bg-orange-50 px-4 py-2 rounded-lg">
+          <span class="text-orange-700 text-sm font-medium">
+            {{ pendingPostCount }} bài viết chờ duyệt
+          </span>
         </div>
       </div>
 
       <!-- Statistics Cards -->
-      <div class="lg:col-span-2">
-        <div class="grid grid-cols-2 gap-6">
-          <!-- Total Users Card -->
-          <div class="bg-white rounded-2xl border border-slate-200/60 p-6 hover:shadow-md transition-all duration-300 group">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
-                  <IconUsers class="w-6 h-6 text-blue-600" />
-                </div>
-                <p class="text-slate-500 text-sm font-medium mb-1">Người dùng</p>
-                <p class="text-2xl font-semibold text-slate-800">
-                  {{ summary?.totalUsers || 0 }}
-                </p>
-              </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Users Card -->
+        <div class="bg-white rounded-lg p-6 border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm mb-1">Người dùng</p>
+              <p class="text-3xl font-bold text-gray-900">
+                {{ summary?.totalUsers || 0 }}
+              </p>
             </div>
-          </div>
-          
-          <!-- Total Posts Card -->
-          <div class="bg-white rounded-2xl border border-slate-200/60 p-6 hover:shadow-md transition-all duration-300 group">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-emerald-100 transition-colors">
-                  <IconFileText class="w-6 h-6 text-emerald-600" />
-                </div>
-                <p class="text-slate-500 text-sm font-medium mb-1">Tài liệu</p>
-                <p class="text-2xl font-semibold text-slate-800">
-                  {{ summary?.totalPosts || 0 }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Total Payments Card -->
-          <div class="bg-white rounded-2xl border border-slate-200/60 p-6 hover:shadow-md transition-all duration-300 group">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
-                  <IconBanknote class="w-6 h-6 text-amber-600" />
-                </div>
-                <p class="text-slate-500 text-sm font-medium mb-1">Giao dịch</p>
-                <p class="text-2xl font-semibold text-slate-800">
-                  {{ summary?.totalPayments || 0 }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Total Revenue Card -->
-          <div class="bg-white rounded-2xl border border-slate-200/60 p-6 hover:shadow-md transition-all duration-300 group">
-            <div class="flex items-start justify-between">
-              <div>
-                <div class="w-12 h-12 bg-violet-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-violet-100 transition-colors">
-                  <IconDollarSign class="w-6 h-6 text-violet-600" />
-                </div>
-                <p class="text-slate-500 text-sm font-medium mb-1">Doanh thu</p>
-                <p class="text-2xl font-semibold text-slate-800">
-                  {{ (summary?.totalRevenue || 0).toLocaleString() }}₫
-                </p>
-              </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <IconUsers class="w-6 h-6 text-blue-600" />
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Phần dưới: Biểu đồ thống kê số bài post theo thời gian -->
-  
-
-    <!-- Chart Section -->
-    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow duration-300">
-      <div class="p-6 border-b border-slate-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-xl font-semibold text-slate-800">Thống kê bài viết</h2>
-            <p class="text-slate-500 text-sm mt-1">Số lượng bài viết theo từng tháng trong năm</p>
+        
+        <!-- Total Posts Card -->
+        <div class="bg-white rounded-lg p-6 border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-600 text-sm mb-1">Tài liệu</p>
+              <p class="text-3xl font-bold text-gray-900">
+                {{ summary?.totalPosts || 0 }}
+              </p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <IconFileText class="w-6 h-6 text-green-600" />
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <label class="text-sm font-medium text-slate-600">Năm:</label>
+        </div>
+
+        <!-- Logo Section -->
+        <div class="bg-white rounded-lg p-6 border border-gray-200 md:col-span-2 flex items-center justify-center">
+          <img
+            src="@/assets/logo.png"
+            alt="Logo"
+            class="object-contain w-32 h-32 opacity-80"
+          />
+        </div>
+      </div>
+
+      <!-- Chart Section -->
+      <div class="bg-white rounded-lg border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-lg font-semibold text-gray-900">Thống kê bài viết</h2>
+              <p class="text-gray-600 text-sm mt-0.5">Số lượng bài viết theo từng tháng</p>
+            </div>
             <select 
               v-model="selectedYear" 
-              class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+              class="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             >
               <option v-for="year in availableYears" :key="year" :value="year">
                 {{ year }}
@@ -126,15 +75,15 @@
             </select>
           </div>
         </div>
-      </div>
 
-      <div class="p-6">
-        <div class="h-[400px] relative">
-          <LineChart
-            v-if="postChartData"
-            :chart-data="postChartData"
-            :options="chartOptions"
-          />
+        <div class="p-6">
+          <div class="h-[350px]">
+            <LineChart
+              v-if="postChartData"
+              :chart-data="postChartData"
+              :options="chartOptions"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -208,12 +157,12 @@ const chartOptions = {
         display: false
       },
       grid: {
-        color: '#f1f5f9',
+        color: '#f3f4f6',
         drawBorder: false
       },
       ticks: {
         stepSize: 1,
-        color: '#64748b',
+        color: '#6b7280',
         font: {
           size: 12
         },
@@ -228,7 +177,7 @@ const chartOptions = {
         display: false
       },
       ticks: {
-        color: '#64748b',
+        color: '#6b7280',
         font: {
           size: 12
         },
@@ -241,28 +190,28 @@ const chartOptions = {
       display: false
     },
     tooltip: {
-      backgroundColor: '#1e293b',
-      titleColor: '#f1f5f9',
-      bodyColor: '#f1f5f9',
-      borderColor: '#334155',
+      backgroundColor: '#1f2937',
+      titleColor: '#f9fafb',
+      bodyColor: '#f9fafb',
+      borderColor: '#374151',
       borderWidth: 1,
-      cornerRadius: 8,
-      padding: 12,
+      cornerRadius: 6,
+      padding: 10,
       displayColors: false,
       titleFont: {
-        size: 13,
+        size: 12,
         weight: 'normal'
       },
       bodyFont: {
-        size: 14,
-        weight: 'bold'
+        size: 13,
+        weight: '600'
       }
     }
   },
   elements: {
     point: {
-      radius: 6,
-      hoverRadius: 8,
+      radius: 4,
+      hoverRadius: 6,
       backgroundColor: '#3b82f6',
       borderColor: '#ffffff',
       borderWidth: 2

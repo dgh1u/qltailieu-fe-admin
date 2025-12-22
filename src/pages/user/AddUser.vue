@@ -45,7 +45,7 @@
               placeholder="Chọn vai trò"
             >
               <a-select-option value="ADMIN">Admin</a-select-option>
-              <a-select-option value="CUSTOMER">Khách hàng</a-select-option>
+              <a-select-option value="CUSTOMER">Người dùng</a-select-option>
             </a-select>
           </a-form-item>
         </div>

@@ -44,8 +44,8 @@
         >
           <a-select-option :value="null">Tất cả</a-select-option>
           <a-select-option value="ADMIN">Admin</a-select-option>
-          <a-select-option value="CUSTOMER">Khách hàng</a-select-option>
-          <a-select-option value="EMPLOYEE">Nhân viên</a-select-option>
+          <a-select-option value="CUSTOMER">Người dùng</a-select-option>
+         
         </a-select>
       </div>
 

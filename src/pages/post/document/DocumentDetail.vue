@@ -47,15 +47,7 @@
             }}</a-tag>
           </div>
         </div>
-        <!-- Hiển thị -->
-        <div class="py-2">
-          <label>Hiển thị</label>
-          <div class="flex rounded-lg mt-1 p-2">
-            <a-tag :color="tagVisibilityColor" class="font-bold">{{
-              displayVisibility
-            }}</a-tag>
-          </div>
-        </div>
+        
       </div>
 
       <div class="py-2">
