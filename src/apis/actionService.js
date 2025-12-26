@@ -1,6 +1,6 @@
 import axios from "@/axios";
 
-// Lấy tất cả bài viết
+// Lấy tất cả tài liệu
 export const getListAction = async (params) => {
   return axios({
     url: "/api/actions",

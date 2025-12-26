@@ -6,7 +6,7 @@
     width="800px"
   >
     <div class="create-post space-y-4">
-      <!-- Tiêu đề tin đăng -->
+      <!-- Tiêu đề tài liệu -->
       <div class="block flex items-center justify-center">
         <span class="font-bold text-4xl text-gray-800">Chi tiết tài liệu</span>
       </div>
@@ -104,7 +104,7 @@
         </div>
       </div>
 
-      <!-- Thông tin mô tả tin đăng -->
+      <!-- Thông tin mô tả tài liệu -->
       <div class="block bg-white rounded-xl p-4">
         <div class="py-2">
           <span class="font-bold text-base">Thông tin mô tả</span>
@@ -384,7 +384,7 @@ const displayMotel = computed(() => {
   return formData.criteria.motel;
 });
 
-// Computed property cho trạng thái bài đăng
+// Computed property cho trạng thái tài liệu
 const displayStatus = computed(() => {
   if (formData.approved === true && formData.notApproved === false) {
     return "Đã duyệt";
@@ -525,7 +525,7 @@ function getFileTypeText(fileTypeOrName) {
 const handleApprove = async () => {
   try {
     await approvePost(props.postId, true);
-    message.success("Bài đăng đã được duyệt");
+    message.success("tài liệu đã được duyệt");
     fetchPostDetails(props.postId);
   } catch (error) {
     console.error("Lỗi duyệt bài:", error);
@@ -537,7 +537,7 @@ const handleApprove = async () => {
 const handleBlock = async () => {
   try {
     await approvePost(props.postId, false);
-    message.success("Bài đăng đã bị khóa");
+    message.success("tài liệu đã bị khóa");
     fetchPostDetails(props.postId);
   } catch (error) {
     console.error("Lỗi khóa bài:", error);
@@ -545,7 +545,7 @@ const handleBlock = async () => {
   }
 };
 
-// Hàm lấy chi tiết bài đăng
+// Hàm lấy chi tiết tài liệu
 const fetchPostDetails = async (id) => {
   try {
     const response = await getDetailPost(id);
@@ -569,8 +569,8 @@ const fetchPostDetails = async (id) => {
     }
     documents.value = data.documents || [];
   } catch (error) {
-    console.error("Lỗi tải thông tin bài đăng:", error);
-    message.error("Không thể tải thông tin bài đăng.");
+    console.error("Lỗi tải thông tin tài liệu:", error);
+    message.error("Không thể tải thông tin tài liệu.");
   }
 };
 

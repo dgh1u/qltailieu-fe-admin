@@ -1,6 +1,6 @@
 import axios from "@/axios";
 
-// Lấy tất cả bài viết
+// Lấy tất cả tài liệu
 export const getListPost = async (params) => {
   return axios({
     url: "/api/posts",
@@ -9,7 +9,7 @@ export const getListPost = async (params) => {
   });
 };
 
-// Lấy chi tiết 1 bài viết
+// Lấy chi tiết 1 tài liệu
 export const getDetailPost = async (id) => {
   return axios({
     url: `api/post/${id}`,
@@ -17,7 +17,7 @@ export const getDetailPost = async (id) => {
   });
 };
 
-// Lấy danh sách tin đăng của một người dùng theo userId
+// Lấy danh sách tài liệu của một người dùng theo userId
 export const getPostsByUserId = async (idUser, params) => {
   return axios({
     url: `/api/posts/${idUser}`,
@@ -26,7 +26,7 @@ export const getPostsByUserId = async (idUser, params) => {
   });
 };
 
-// Tạo bài đăng mới
+// Tạo tài liệu mới
 export const createPost = async (data) => {
   return axios({
     url: `/api/post`,
@@ -35,7 +35,7 @@ export const createPost = async (data) => {
   });
 };
 
-// Cập nhật bài đăng
+// Cập nhật tài liệu
 export const updatePost = async (id, data) => {
   return axios({
     url: `/api/post/${id}`,
@@ -44,7 +44,7 @@ export const updatePost = async (id, data) => {
   });
 };
 
-// Duyệt/Khóa một bài đăng (Admin only)
+// Duyệt/Khóa một tài liệu (Admin only)
 export const approvePost = async (id, bool) => {
   return axios({
     url: `/api/post/${id}/approve/${bool}`,
@@ -52,7 +52,7 @@ export const approvePost = async (id, bool) => {
   });
 };
 
-// Xóa bài đăng (Admin only)
+// Xóa tài liệu (Admin only)
 export const deletePost = async (id) => {
   return axios({
     url: `/api/post/${id}`,

@@ -127,7 +127,7 @@
       </div>
     </div>
 
-    <!-- Bảng danh sách bài viết -->
+    <!-- Bảng danh sách tài liệu -->
     <a-table
       :columns="columns"
       :data-source="posts"
@@ -275,7 +275,7 @@ export default {
       { title: "Hành động", key: "action", width: 96 },
     ];
 
-    // Fetch danh sách bài viết từ API
+    // Fetch danh sách tài liệu từ API
     const fetchPosts = async () => {
       loading.value = true;
       try {
@@ -337,7 +337,7 @@ export default {
         }
       } catch (error) {
         console.error("Lỗi API:", error);
-        message.error(`Lỗi tải danh sách bài viết: ${error.message}`);
+        message.error(`Lỗi tải danh sách tài liệu: ${error.message}`);
       }
       loading.value = false;
     };
@@ -366,7 +366,7 @@ export default {
       showDocumentDetailPopup.value = true;
     };
 
-    // Xác nhận và xóa bài viết
+    // Xác nhận và xóa tài liệu
     const confirmDelete = (record) => {
       Modal.confirm({
         title: "Xóa tài liệu",

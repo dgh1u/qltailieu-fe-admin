@@ -72,20 +72,20 @@
                       <div class="text-sm text-slate-700 leading-relaxed">
                         <template v-if="action.action === 'CREATE'">
                           <span class="font-semibold text-slate-800">{{ action.fullName }}</span> 
-                          đã tạo bài đăng 
+                          đã tạo tài liệu 
                           <span class="font-medium text-blue-600">"{{ action.postTitle }}"</span>
                           <span class="text-slate-500">(ID: {{ action.postId }})</span>
                           đang chờ kiểm duyệt.
                         </template>
                         <template v-else-if="action.action === 'APPROVE'">
                           <span class="font-semibold text-slate-800">ADMIN</span> 
-                          đã duyệt bài đăng 
+                          đã duyệt tài liệu 
                           <span class="font-medium text-blue-600">"{{ action.postTitle }}"</span>
                           <span class="text-slate-500">(ID: {{ action.postId }})</span>.
                         </template>
                         <template v-else-if="action.action === 'BLOCK'">
                           <span class="font-semibold text-slate-800">ADMIN</span> 
-                          đã khóa bài đăng 
+                          đã khóa tài liệu 
                           <span class="font-medium text-blue-600">"{{ action.postTitle }}"</span>
                           <span class="text-slate-500">(ID: {{ action.postId }})</span>.
                         </template>
@@ -150,7 +150,7 @@ const fetchActions = async () => {
       actions.value = result.items;
       pagination.value.total = result.total;
     } else {
-      // Lấy tất cả bài đăng của user => limit cũng <= 50
+      // Lấy tất cả tài liệu của user => limit cũng <= 50
       const postRes = await getPostsByUserId(filterUserId.value.trim(), {
         start: 0,
         limit: 50,

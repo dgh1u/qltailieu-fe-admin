@@ -10,7 +10,7 @@
         
         <div v-if="pendingPostCount > 0" class="bg-orange-50 px-4 py-2 rounded-lg">
           <span class="text-orange-700 text-sm font-medium">
-            {{ pendingPostCount }} bài viết chờ duyệt
+            {{ pendingPostCount }} tài liệu chờ duyệt
           </span>
         </div>
       </div>
@@ -62,8 +62,8 @@
         <div class="px-6 py-4 border-b border-gray-200">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-lg font-semibold text-gray-900">Thống kê bài viết</h2>
-              <p class="text-gray-600 text-sm mt-0.5">Số lượng bài viết theo từng tháng</p>
+              <h2 class="text-lg font-semibold text-gray-900">Thống kê tài liệu</h2>
+              <p class="text-gray-600 text-sm mt-0.5">Số lượng tài liệu theo từng tháng</p>
             </div>
             <select 
               v-model="selectedYear" 
@@ -223,7 +223,7 @@ const chartOptions = {
 const postChartData = ref({
   labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
   datasets: [{
-    label: 'Số lượng bài viết',
+    label: 'Số lượng tài liệu',
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
     borderColor: '#3b82f6',
     pointBackgroundColor: '#3b82f6',
@@ -242,14 +242,14 @@ async function fetchPendingPosts() {
     // Truyền params: approved = true và notApproved = true
     const res = await getListPost({ approved: true, notApproved: true });
 
-    // Giả sử API trả về danh sách bài viết trong res.data
+    // Giả sử API trả về danh sách tài liệu trong res.data
     pendingPostCount.value = res.data?.total || 0;
   } catch (error) {
-    console.error("Lỗi khi lấy bài viết chưa duyệt:", error);
+    console.error("Lỗi khi lấy tài liệu chưa duyệt:", error);
   }
 }
 
-// Thống kê số liệu bài viết của người dùng theo ngày/tháng
+// Thống kê số liệu tài liệu của người dùng theo ngày/tháng
 const fetchUserPostStats = async () => {
   try {
     const start = `${selectedYear.value}-01-01`;
@@ -280,7 +280,7 @@ const fetchUserPostStats = async () => {
       postChartData.value = {
         labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
         datasets: [{
-          label: 'Số lượng bài viết',
+          label: 'Số lượng tài liệu',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
           borderColor: '#3b82f6',
           pointBackgroundColor: '#3b82f6',

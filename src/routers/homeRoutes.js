@@ -4,7 +4,7 @@ import User from "../pages/user/UserManagement.vue";
 import Dashboard from "../pages/dashboard/Dashboard.vue";
 import Action from "../pages/action/Action.vue";
 
-// Import các loại bài đăng
+// Import các loại tài liệu
 import DocumentManagement from "../pages/post/document/DocumentManagement.vue";
 
 export default [

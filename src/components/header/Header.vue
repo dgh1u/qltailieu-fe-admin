@@ -77,13 +77,13 @@ const pageTitles = {
   "/home/dashboard": { title: "Thống kê", icon: ChartPie },
   "/home/action": { title: "Quản lý hoạt động", icon: Activity },
   "/home/user": { title: "Quản lý người dùng", icon: Users },
-  "/home/post/motel": { title: "TIN ĐĂNG NHÀ TRỌ", icon: House },
+  "/home/post/motel": { title: "tài liệu NHÀ TRỌ", icon: House },
   "/home/post/food-beverage": {
-    title: "TIN ĐĂNG ĂN UỐNG",
+    title: "tài liệu ĂN UỐNG",
     icon: Utensils,
   },
   "/home/post/store-utility": {
-    title: "TIN ĐĂNG CỬA HÀNG - TIỆN ÍCH",
+    title: "tài liệu CỬA HÀNG - TIỆN ÍCH",
     icon: Store,
   },
   "/home/post/document": {
