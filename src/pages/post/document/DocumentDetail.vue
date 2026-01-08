@@ -303,34 +303,40 @@ import {
   defineEmits,
 } from "vue";
 import { message } from "ant-design-vue";
-import { Check as CheckIcon } from "lucide-vue-next";
 import { getDetailPost, approvePost } from "@/apis/postService.js";
 import { downloadDoc } from "@/apis/documentService.js";
 
+// Danh sách tài liệu đính kèm
 const documents = ref([]);
 
+// Props và emit từ component cha
 const props = defineProps({
   open: { type: Boolean, default: false },
   postId: { type: [String, Number], default: "" },
 });
 const emit = defineEmits(["update:open"]);
 
+// Điều khiển modal hiển thị/ẩn
 const modalVisible = computed({
   get: () => props.open,
   set: (value) => emit("update:open", value),
 });
 
-// Biến chứa danh sách URL hình ảnh dạng gallery
+// Danh sách hình ảnh hiển thị
 const galleryImages = ref([]);
 
-// Biến điều hướng ảnh
+// Điều khiển chuyển ảnh
 const currentImageIndex = ref(0);
+
+// Chuyển sang ảnh tiếp theo
 const nextImage = () => {
   if (galleryImages.value.length > 0) {
     currentImageIndex.value =
       (currentImageIndex.value + 1) % galleryImages.value.length;
   }
 };
+
+// Quay lại ảnh trước đó
 const prevImage = () => {
   if (galleryImages.value.length > 0) {
     currentImageIndex.value =
@@ -339,7 +345,7 @@ const prevImage = () => {
   }
 };
 
-// Dữ liệu form
+// Dữ liệu chi tiết tài liệu
 const formData = reactive({
   title: "",
   content: "",
@@ -360,31 +366,11 @@ const formData = reactive({
     dineIn: false,
     takeAway: false,
     bigSpace: false,
+    major: "",
   },
 });
 
-// Bản đồ
-const mapAddress = ref("");
-const addressTimer = ref(null);
-
-watch(
-  () => formData.criteria.address,
-  (newAddress) => {
-    if (addressTimer.value) clearTimeout(addressTimer.value);
-    addressTimer.value = setTimeout(() => {
-      mapAddress.value = newAddress;
-    }, 1000);
-  }
-);
-
-// Computed property hiển thị Hình thức
-const displayMotel = computed(() => {
-  if (formData.criteria.motel === "TAI_LIEU") return "Tài liệu";
-
-  return formData.criteria.motel;
-});
-
-// Computed property cho trạng thái tài liệu
+// Hiển thị trạng thái tài liệu
 const displayStatus = computed(() => {
   if (formData.approved === true && formData.notApproved === false) {
     return "Đã duyệt";
@@ -396,17 +382,7 @@ const displayStatus = computed(() => {
   return "";
 });
 
-// Computed property cho hiển thị: nếu del=false: "Hiển thị", nếu del=true: "Bị ẩn"
-const displayVisibility = computed(() => (formData.del ? "Bị ẩn" : "Hiển thị"));
-
-// Computed property định nghĩa màu chữ cho Hình thức
-const motelColor = computed(() => {
-  if (formData.criteria.motel === "TAI_LIEU") return "text-green-500";
-
-  return "";
-});
-
-// Computed property định nghĩa màu cho Trạng thái (Tag của antd)
+// Màu hiển thị cho tag trạng thái
 const tagStatusColor = computed(() => {
   if (displayStatus.value === "Đã duyệt") return "green";
   if (displayStatus.value === "Chờ duyệt") return "gold";
@@ -414,88 +390,56 @@ const tagStatusColor = computed(() => {
   return "";
 });
 
-// Computed property định nghĩa màu cho Hiển thị (Tag của antd)
-const tagVisibilityColor = computed(() => {
-  if (displayVisibility.value === "Hiển thị") return "green";
-  if (displayVisibility.value === "Bị ẩn") return "red";
-  return "";
-});
-
-// Hàm tải tài liệu đã được cập nhật để sử dụng API downloadDoc
+// Xử lý tải tài liệu về máy
 async function handleDocumentClick(doc) {
   try {
-    console.log("💾 Tải tài liệu:", doc.file_name);
-    console.log("🆔 Document ID:", doc.id);
-
-    // Gọi API downloadDoc thay vì fetch trực tiếp
     const response = await downloadDoc(doc.id);
 
-    console.log("📡 Response:", response);
-    console.log("📡 Response type:", typeof response);
-    console.log("📡 Is Blob:", response instanceof Blob);
-
     let blob;
-    let downloadFileName = doc.fileName; // Fallback filename
+    let downloadFileName = doc.fileName;
 
-    // Kiểm tra nếu response là Blob trực tiếp
+    // Xử lý response từ API
     if (response instanceof Blob) {
       blob = response;
-      console.log(
-        "📦 Direct blob - size:",
-        blob.size,
-        "bytes, type:",
-        blob.type
-      );
     } else if (response.data) {
-      // Nếu response có structure thông thường
-      console.log("📡 Response headers:", response.headers);
-
-      // Lấy filename từ Content-Disposition header nếu có
+      // Lấy tên file từ header nếu có
       if (response.headers && response.headers["content-disposition"]) {
         const contentDisposition = response.headers["content-disposition"];
         const fileNameMatch = contentDisposition.match(
-          /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+          /filename[^;=\n]*=((['^"]).*?\2|[^;\n]*)/
         );
         if (fileNameMatch && fileNameMatch[1]) {
           downloadFileName = fileNameMatch[1].replace(/['"]/g, "");
-          console.log("📝 Filename từ header:", downloadFileName);
         }
       }
 
-      // Kiểm tra xem response.data có hợp lệ không
       if (!response.data) {
         throw new Error("API không trả về dữ liệu file");
       }
 
-      // Tạo blob từ response data
       blob = new Blob([response.data]);
     } else {
       throw new Error("Response format không được hỗ trợ");
     }
 
-    console.log("📦 Final blob size:", blob.size, "bytes");
-    console.log("📝 Download filename:", downloadFileName);
-
     if (blob.size === 0) {
       throw new Error("File rỗng");
     }
 
-    // Tạo URL tạm từ blob và tải về
+    // Tạo link tải file
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = downloadFileName; // ⭐ Quan trọng: download attribute
-    link.style.display = "none"; // Ẩn link
+    link.download = downloadFileName;
+    link.style.display = "none";
 
-    // Thêm vào DOM, click, rồi xóa ngay
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    // Cleanup URL sau 1 giây
+    // Xóa URL tạm sau 1 giây
     setTimeout(() => {
       window.URL.revokeObjectURL(url);
-      console.log("🗑️ Cleaned up blob URL");
     }, 1000);
 
     message.success(
@@ -504,11 +448,12 @@ async function handleDocumentClick(doc) {
       )}MB)`
     );
   } catch (error) {
-    console.error("❌ Lỗi tải file:", error);
+    console.error("Lỗi tải file:", error);
     message.error(`Không thể tải file: ${error.message}`);
   }
 }
 
+// Lấy tên loại file từ file type hoặc tên file
 function getFileTypeText(fileTypeOrName) {
   if (typeof fileTypeOrName === "string") {
     const lower = fileTypeOrName.toLowerCase();
@@ -521,7 +466,7 @@ function getFileTypeText(fileTypeOrName) {
   return "Document";
 }
 
-// Hàm duyệt bài
+// Duyệt tài liệu
 const handleApprove = async () => {
   try {
     await approvePost(props.postId, true);
@@ -533,7 +478,7 @@ const handleApprove = async () => {
   }
 };
 
-// Hàm khóa bài
+// Khóa tài liệu
 const handleBlock = async () => {
   try {
     await approvePost(props.postId, false);
@@ -545,28 +490,33 @@ const handleBlock = async () => {
   }
 };
 
-// Hàm lấy chi tiết tài liệu
+// Lấy thông tin chi tiết tài liệu từ API
 const fetchPostDetails = async (id) => {
   try {
     const response = await getDetailPost(id);
     const data = response.data || {};
+    
+    // Cập nhật thông tin cơ bản
     formData.title = data.title || "";
     formData.content = data.content || "";
     formData.approved = data.approved ?? false;
     formData.notApproved = data.notApproved ?? false;
     formData.del = data.del ?? false;
+    
+    // Cập nhật thông tin chi tiết
     if (data.criteriaDTO) {
       Object.assign(formData.criteria, data.criteriaDTO);
       if (data.criteriaDTO.district && data.criteriaDTO.district.id) {
         formData.criteria.idDistrict = data.criteriaDTO.district.id;
       }
     }
-    // Nếu API trả về mảng hình ảnh thì cập nhật lại galleryImages
+    
+    // Cập nhật hình ảnh
     if (data.imageStrings) {
       galleryImages.value = data.imageStrings;
-      // Reset currentImageIndex về 0 nếu cần
       currentImageIndex.value = 0;
     }
+    
     documents.value = data.documents || [];
   } catch (error) {
     console.error("Lỗi tải thông tin tài liệu:", error);
@@ -574,12 +524,14 @@ const fetchPostDetails = async (id) => {
   }
 };
 
+// Khởi tạo component
 onMounted(() => {
   if (props.postId) {
     fetchPostDetails(props.postId);
   }
 });
 
+// Theo dõi thay đổi postId
 watch(
   () => props.postId,
   (newPostId, oldPostId) => {
@@ -589,6 +541,7 @@ watch(
   }
 );
 
+// Đóng modal
 const handleClose = () => {
   modalVisible.value = false;
 };

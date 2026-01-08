@@ -114,54 +114,56 @@ export default {
   },
   emits: ["update:open", "user-updated"],
   setup(props, { emit }) {
+    // Dữ liệu form người dùng
     const userForm = ref({
       id: "",
       email: "",
       fullName: "",
       address: "",
-      balance: "",
       phone: "",
       block: false,
       roleId: "",
     });
 
-    // Lưu file đã chọn
+    // File avatar được chọn
     const selectedFile = ref(null);
-    // URL hiển thị avatar (dạng base64)
+    
+    // URL hiển thị avatar
     const avatarUrl = ref("");
 
+    // Trạng thái loading
     const loading = ref(false);
 
-    // Lấy thông tin user & avatar khi mở popup
+    // Lấy thông tin người dùng khi mở modal
     watch(
       () => props.open,
       async (newVal) => {
         if (newVal && props.userId) {
           try {
+            // Lấy thông tin người dùng
             const response = await getUserById(props.userId);
-            // Tuỳ vào backend trả về
             const responseData = response?.data || response?.result || response;
             userForm.value = { ...responseData };
 
             // Lấy avatar
             const avatarRes = await getAvatar(props.userId);
-            // Giả sử BE trả về { data: "chuỗi base64" }
             avatarUrl.value = `data:image/png;base64,${avatarRes.data}`;
           } catch (error) {
-            console.error("Error fetching user data:", error);
+            console.error("Lỗi tải dữ liệu người dùng:", error);
             message.error("Không thể tải dữ liệu người dùng!");
           }
         }
       }
     );
 
-    // Khi người dùng chọn file
+    // Xử lý khi chọn file avatar
     const handleFileChange = (event) => {
       selectedFile.value = event.target.files[0] || null;
     };
 
-    // Submit form (update thông tin + upload avatar nếu có)
+    // Cập nhật thông tin người dùng
     const handleSubmit = async () => {
+      // Kiểm tra ID
       if (!userForm.value.id) {
         message.error("Lỗi: ID người dùng không tồn tại!");
         return;
@@ -169,19 +171,21 @@ export default {
 
       loading.value = true;
       try {
-        // Cập nhật thông tin user
+        // Cập nhật thông tin người dùng
         await updateUser(userForm.value);
 
-        // Nếu có file được chọn thì upload avatar
+        // Upload avatar nếu có file mới
         if (selectedFile.value) {
           await postAvatar(userForm.value.id, selectedFile.value);
         }
 
         message.success("Cập nhật người dùng thành công!");
+        
+        // Đóng modal và thông báo cập nhật
         emit("update:open", false);
         emit("user-updated");
       } catch (error) {
-        console.error("Update user failed:", error);
+        console.error("Lỗi cập nhật người dùng:", error);
         message.error("Cập nhật thất bại!");
       } finally {
         loading.value = false;
@@ -202,20 +206,26 @@ export default {
 </script>
 
 <style scoped>
+/* Tiêu đề modal */
 .popup-header {
   text-align: center;
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 20px;
 }
+
+/* Container form 2 cột */
 .form-container {
   display: flex;
   justify-content: space-between;
   gap: 20px;
 }
+
 .form-column {
   flex: 1;
 }
+
+/* Nút cập nhật */
 .confirm-button {
   display: flex;
   justify-content: center;

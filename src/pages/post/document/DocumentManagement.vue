@@ -252,40 +252,38 @@ export default {
     });
     const showDocumentDetailPopup = ref(false);
     const selectedPostId = ref(null);
+    // Các bộ lọc
     const selectedUserId = ref(null);
-    const selectedDel = ref(null); // Định nghĩa lọc Hiển thị
-    const selectedDocumentType = ref(null); // Định nghĩa lọc Loại hình
+    const selectedDel = ref(null);
     const selectedSecondMotel = ref(null);
-    const selectedMajor = ref(null); // Định nghĩa lọc Chuyên ngành
+    const selectedMajor = ref(null);
 
 
-    // Cấu hình các cột cho bảng
+    // Cấu hình các cột hiển thị trong bảng
     const columns = [
       { title: "STT", key: "stt" },
       { title: "ID", dataIndex: "id", key: "id" },
-
       { title: "Tiêu đề", dataIndex: "title", key: "title" },
       { title: "Chuyên ngành", dataIndex: "major", key: "major" },
       { title: "Loại tài liệu", dataIndex: "secondMotel", key: "secondMotel" },
       { title: "Ngày tạo", dataIndex: "createAt", key: "createAt" },
       { title: "Trạng thái", key: "approved" },
       { title: "Người đăng", key: "user" },
-     
-      // Cột người đăng
       { title: "Hành động", key: "action", width: 96 },
     ];
 
-    // Fetch danh sách tài liệu từ API
+    // Lấy danh sách tài liệu từ API
     const fetchPosts = async () => {
       loading.value = true;
       try {
+        // Tạo tham số truy vấn
         const params = {
           start: Math.max(pagination.value.current - 1, 0),
           limit: pagination.value.pageSize,
           keywords: searchText.value.trim(),
         };
 
-        // Logic lọc trạng thái
+        // Áp dụng bộ lọc trạng thái
         switch (selectedStatus.value) {
           case "APPROVED":
             params.approved = true;
@@ -302,17 +300,14 @@ export default {
             break;
         }
 
-        // Lọc theo UserId
+        // Áp dụng các bộ lọc khác
         if (selectedUserId.value) {
           params.userId = selectedUserId.value;
         }
 
-        // Lọc theo Hiển thị (del)
         if (selectedDel.value) {
           params.del = selectedDel.value;
         }
-
-        // Lọc theo Loại hình (criteriaDTO.motel)
 
         params.motels = "TAI_LIEU";
 
@@ -320,15 +315,13 @@ export default {
           params.secondMotel = selectedSecondMotel.value;
         }
 
-        // Lọc theo Chuyên ngành
         if (selectedMajor.value) {
           params.major = selectedMajor.value;
         }
 
-        // Log dữ liệu lọc gửi đi
-        console.log("Params gửi đi:", params);
         const res = await getListPost(params);
 
+        // Xử lý dữ liệu trả về
         if (res.data && res.data.items) {
           posts.value = res.data.items;
           pagination.value.total = res.data.total || 0;
@@ -349,24 +342,25 @@ export default {
       fetchPosts();
     };
 
-    // Xử lý khi người dùng tìm kiếm
+    // Xử lý tìm kiếm
     const handleSearch = () => {
       pagination.value.current = 1;
       fetchPosts();
     };
 
-    // Xử lý khi người dùng thay đổi bộ lọc
+    // Xử lý thay đổi bộ lọc
     const handleFilterChange = () => {
       pagination.value.current = 1;
       fetchPosts();
     };
 
+    // Xem chi tiết tài liệu
     const viewPost = (record) => {
       selectedPostId.value = record.id;
       showDocumentDetailPopup.value = true;
     };
 
-    // Xác nhận và xóa tài liệu
+    // Xác nhận xóa tài liệu
     const confirmDelete = (record) => {
       Modal.confirm({
         title: "Xóa tài liệu",
@@ -385,6 +379,7 @@ export default {
       });
     };
 
+    // Khởi tạo - tải danh sách tài liệu
     onMounted(fetchPosts);
 
     return {
@@ -403,9 +398,7 @@ export default {
 
       showDocumentDetailPopup,
       selectedPostId,
-
       selectedUserId,
-      selectedDocumentType,
       selectedDel,
       selectedSecondMotel,
       selectedMajor,

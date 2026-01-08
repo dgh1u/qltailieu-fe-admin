@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { ref, watch, defineProps, defineEmits } from "vue";
+import { ref, watch } from "vue";
 import { addUser } from "@/apis/userService";
 import { message } from "ant-design-vue";
 
@@ -72,6 +72,7 @@ export default {
   },
   emits: ["update:open", "user-added"],
   setup(props, { emit }) {
+    // Dữ liệu form người dùng
     const userForm = ref({
       email: "",
       password: "",
@@ -81,9 +82,10 @@ export default {
       roleId: "",
     });
 
+    // Trạng thái loading
     const loading = ref(false);
 
-    // Reset form khi mở popup
+    // Reset form khi mở modal
     watch(
       () => props.open,
       (newVal) => {
@@ -100,7 +102,9 @@ export default {
       }
     );
 
+    // Xử lý thêm người dùng
     const handleSubmit = async () => {
+      // Kiểm tra thông tin bắt buộc
       if (
         !userForm.value.email ||
         !userForm.value.password ||
@@ -114,8 +118,11 @@ export default {
 
       loading.value = true;
       try {
+        // Gọi API thêm người dùng
         await addUser(userForm.value);
         message.success("Thêm người dùng thành công!");
+        
+        // Đóng modal và thông báo đã thêm
         emit("update:open", false);
         emit("user-added");
       } catch (error) {
@@ -135,7 +142,7 @@ export default {
 </script>
 
 <style scoped>
-/* Tiêu đề căn giữa */
+/* Tiêu đề modal */
 .popup-header {
   text-align: center;
   font-size: 20px;
@@ -143,7 +150,7 @@ export default {
   margin-bottom: 20px;
 }
 
-/* Chia form thành 2 cột */
+/* Container form 2 cột */
 .form-container {
   display: flex;
   justify-content: space-between;
@@ -154,7 +161,7 @@ export default {
   flex: 1;
 }
 
-/* Căn giữa nút Xác nhận */
+/* Nút xác nhận */
 .confirm-button {
   display: flex;
   justify-content: center;

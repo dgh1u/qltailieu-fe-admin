@@ -97,9 +97,7 @@ import axios from "@/axios";
 // Lucide Icons
 import {
   Users as IconUsers,
-  Banknote as IconBanknote,
   FileText as IconFileText,
-  DollarSign as IconDollarSign,
 } from "lucide-vue-next";
 
 // Chart.js + vue-chart-3
@@ -114,35 +112,18 @@ const authStore = useAuthStore();
 const fullName = computed(() => authStore.user?.fullName || "Người dùng");
 
 // API Data
-const summary = ref(null); // /api/dashboard/summary
-const revenueData = ref([]); // /api/dashboard/revenue
+const summary = ref(null);
 
-// Group mode: 'year' or 'month'
-const groupMode = ref("year");
+// Thông tin năm được chọn
 const selectedYear = ref(new Date().getFullYear());
-const selectedMonth = ref(1);
 
-// Available years, months
+// Danh sách các năm có sẵn
 const availableYears = computed(() => {
   const currentYear = new Date().getFullYear();
   return Array.from({length: 5}, (_, i) => currentYear - 2 + i);
 });
-const availableMonths = ref([
-  { value: 1, label: "Tháng 1" },
-  { value: 2, label: "Tháng 2" },
-  { value: 3, label: "Tháng 3" },
-  { value: 4, label: "Tháng 4" },
-  { value: 5, label: "Tháng 5" },
-  { value: 6, label: "Tháng 6" },
-  { value: 7, label: "Tháng 7" },
-  { value: 8, label: "Tháng 8" },
-  { value: 9, label: "Tháng 9" },
-  { value: 10, label: "Tháng 10" },
-  { value: 11, label: "Tháng 11" },
-  { value: 12, label: "Tháng 12" },
-]);
 
-// Chart options
+// Cấu hình biểu đồ
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -219,7 +200,7 @@ const chartOptions = {
   }
 };
 
-// Post chart data
+// Dữ liệu biểu đồ tài liệu
 const postChartData = ref({
   labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
   datasets: [{
@@ -237,29 +218,21 @@ const postChartData = ref({
   }]
 });
 
+// Lấy danh sách tài liệu chờ duyệt
 async function fetchPendingPosts() {
   try {
-    // Truyền params: approved = true và notApproved = true
     const res = await getListPost({ approved: true, notApproved: true });
-
-    // Giả sử API trả về danh sách tài liệu trong res.data
     pendingPostCount.value = res.data?.total || 0;
   } catch (error) {
     console.error("Lỗi khi lấy tài liệu chưa duyệt:", error);
   }
 }
 
-// Thống kê số liệu tài liệu của người dùng theo ngày/tháng
+// Lấy thống kê tài liệu theo tháng trong năm được chọn
 const fetchUserPostStats = async () => {
   try {
     const start = `${selectedYear.value}-01-01`;
     const end = `${selectedYear.value}-12-31`;
-
-    console.log('API Request Params:', {
-      start,
-      end,
-      groupBy: 'month'
-    });
 
     const response = await axios.get('/api/dashboard/post-stats', {
       params: {
@@ -273,7 +246,7 @@ const fetchUserPostStats = async () => {
       const monthlyData = Array(12).fill(0);
       
       response.forEach(item => {
-        const month = parseInt(item.groupKey.split('-')[1]) - 1; // Convert to 0-based index
+        const month = parseInt(item.groupKey.split('-')[1]) - 1;
         monthlyData[month] = item.totalPosts;
       });
 
@@ -295,43 +268,28 @@ const fetchUserPostStats = async () => {
       };
     }
   } catch (error) {
-    console.error('Error fetching post statistics:', error);
+    console.error('Lỗi khi lấy thống kê tài liệu:', error);
   }
 };
 
-// Lifecycle
+// Khởi tạo component
 onMounted(async () => {
-  console.log('Component mounted');
   await fetchSummary();
-  console.log('Summary fetched:', summary.value);
-  
   await fetchPendingPosts();
-  console.log('Pending posts count:', pendingPostCount.value);
-  
   await fetchUserPostStats();
 });
 
-// Gọi API summary
+// Gọi API lấy thông tin tổng hợp
 async function fetchSummary() {
   try {
     const res = await axios.get("/api/dashboard/summary");
     summary.value = res;
   } catch (error) {
-    console.error("Error fetching summary:", error);
+    console.error("Lỗi khi lấy thông tin tổng hợp:", error);
   }
 }
 
-// Thêm vào watch để theo dõi thay đổi
-watch([groupMode, selectedYear, selectedMonth], () => {
-  console.log('Filter changed:', {
-    groupMode: groupMode.value,
-    selectedYear: selectedYear.value,
-    selectedMonth: selectedMonth.value
-  });
-  fetchUserPostStats();
-});
-
-// Watch for year changes
+// Theo dõi thay đổi năm để cập nhật biểu đồ
 watch(selectedYear, () => {
   fetchUserPostStats();
 });

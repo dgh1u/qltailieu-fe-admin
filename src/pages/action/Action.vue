@@ -124,33 +124,37 @@
 import { ref, onMounted } from "vue";
 import { Search, PlusCircle, CheckCircle2, XCircle } from "lucide-vue-next";
 import { getListAction } from "@/apis/actionService";
-import { getPostsByUserId } from "@/apis/postService"; // <-- API lấy post theo userId
+import { getPostsByUserId } from "@/apis/postService";
 
+// Danh sách hành động
 const actions = ref([]);
+
+// Bộ lọc theo User ID
 const filterUserId = ref("");
 
-// Giữ pageSize <= 50
+// Cấu hình phân trang
 const pagination = ref({
   current: 1,
-  pageSize: 5, // mặc định 5
+  pageSize: 5,
   total: 0,
   showTotal: (total) => `Tổng cộng: ${total} bản ghi`,
 });
 
+// Lấy danh sách hành động
 const fetchActions = async () => {
   try {
-    // Nếu chưa nhập userId, lấy tất cả action
+    // Nếu không có User ID, lấy tất cả hành động
     if (!filterUserId.value.trim()) {
       const params = {
         start: pagination.value.current - 1,
-        limit: Math.min(pagination.value.pageSize, 50), // <= 50
+        limit: Math.min(pagination.value.pageSize, 50),
       };
       const res = await getListAction(params);
       const result = res.data.data || res.data;
       actions.value = result.items;
       pagination.value.total = result.total;
     } else {
-      // Lấy tất cả tài liệu của user => limit cũng <= 50
+      // Lấy hành động theo User ID
       const postRes = await getPostsByUserId(filterUserId.value.trim(), {
         start: 0,
         limit: 50,
@@ -158,16 +162,15 @@ const fetchActions = async () => {
       const postData = postRes.data.data || postRes.data;
       const postItems = postData.items || [];
 
-      // Gom mảng postId
+      // Lấy danh sách ID tài liệu
       const postIds = postItems.map((p) => p.id);
-      // Chuyển thành chuỗi CSV, vd: "39,38,29"
       const postIdsCsv = postIds.join(",");
 
-      // Gọi getListAction với postIds kiểu CSV
+      // Gọi API với danh sách ID tài liệu
       const actionParams = {
         start: pagination.value.current - 1,
         limit: Math.min(pagination.value.pageSize, 50),
-        postIds: postIdsCsv, // "39,38,29"
+        postIds: postIdsCsv,
       };
       const actionRes = await getListAction(actionParams);
       const actionResult = actionRes.data.data || actionRes.data;
@@ -175,20 +178,23 @@ const fetchActions = async () => {
       pagination.value.total = actionResult.total;
     }
   } catch (error) {
-    console.error("fetchActions error:", error);
+    console.error("Lỗi lấy danh sách hành động:", error);
   }
 };
 
+// Xử lý thay đổi bộ lọc
 const handleFilterChange = () => {
   pagination.value.current = 1;
   fetchActions();
 };
 
+// Xử lý thay đổi trang
 const handlePageChange = (page) => {
   pagination.value.current = page;
   fetchActions();
 };
 
+// Định dạng thời gian
 const formatTime = (arr) => {
   if (!Array.isArray(arr) || arr.length !== 6) return "";
   const [y, m, d, hh, mm, ss] = arr;
@@ -200,6 +206,7 @@ const formatTime = (arr) => {
   );
 };
 
+// Lấy icon theo loại hành động
 const actionIcon = (type) => {
   return (
     {
@@ -210,6 +217,7 @@ const actionIcon = (type) => {
   );
 };
 
+// Lấy màu nút theo loại hành động
 const actionColor = (type) => {
   return (
     {
@@ -220,6 +228,7 @@ const actionColor = (type) => {
   );
 };
 
+// Lấy màu badge theo loại hành động
 const actionBadgeColor = (type) => {
   return (
     {
@@ -230,6 +239,7 @@ const actionBadgeColor = (type) => {
   );
 };
 
+// Lấy tên hiển thị theo loại hành động
 const actionText = (type) => {
   return (
     {
@@ -240,11 +250,12 @@ const actionText = (type) => {
   );
 };
 
+// Khởi tạo - tải danh sách hành động
 onMounted(fetchActions);
 </script>
 
 <style scoped>
-/* Custom pagination styling */
+/* Tùy chỉnh phân trang */
 :deep(.custom-pagination .ant-pagination-item) {
   border-radius: 8px;
   border: 1px solid #e2e8f0;

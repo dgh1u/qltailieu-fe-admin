@@ -101,17 +101,26 @@ export default {
   },
   emits: ["update:open"],
   setup(props, { emit }) {
+    // Thông tin chi tiết người dùng
     const userDetail = ref({});
+    
+    // Tên vai trò hiển thị
     const roleName = ref("");
+    
+    // URL avatar
     const avatarUrl = ref("");
 
+    // Lấy thông tin chi tiết người dùng
     const fetchUserDetail = async () => {
       if (!props.userId) return;
+      
       try {
+        // Lấy thông tin người dùng
         const userData = await getUserById(props.userId);
         if (!userData) {
           throw new Error("Không tìm thấy dữ liệu người dùng");
         }
+        
         userDetail.value = userData;
         roleName.value = userData.role?.name || "Không có vai trò";
 
@@ -123,12 +132,12 @@ export default {
           avatarUrl.value = "";
         }
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Lỗi tải dữ liệu người dùng:", error);
         message.error("Không thể tải dữ liệu người dùng!");
       }
     };
 
-    // Khi mở popup, fetch dữ liệu
+    // Tải dữ liệu khi mở modal
     watch(
       () => props.open,
       (newVal) => {
@@ -147,6 +156,7 @@ export default {
 </script>
 
 <style scoped>
+/* Tiêu đề modal */
 .popup-header {
   text-align: center;
   font-size: 20px;
@@ -154,6 +164,7 @@ export default {
   margin-bottom: 20px;
 }
 
+/* Container form 2 cột */
 .form-container {
   display: flex;
   justify-content: space-between;
@@ -164,6 +175,7 @@ export default {
   flex: 1;
 }
 
+/* Input disabled với màu đen */
 .custom-input {
   color: black !important;
 }

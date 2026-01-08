@@ -126,7 +126,6 @@ import {
   SearchOutlined,
   EyeOutlined,
 } from "@ant-design/icons-vue";
-import { useRouter } from "vue-router";
 import AddUser from "./AddUser.vue";
 import UserDetail from "./UserDetail.vue";
 import EditUser from "./EditUser.vue";
@@ -143,38 +142,44 @@ export default {
     EditUser,
   },
   setup() {
+    // Danh sách người dùng
     const users = ref([]);
+    
+    // Trạng thái loading
     const loading = ref(false);
+    
+    // Tìm kiếm và bộ lọc
     const searchText = ref("");
     const selectedStatus = ref(null);
     const selectedRole = ref(null);
+    
+    // Cấu hình phân trang
     const pagination = ref({
       current: 1,
       pageSize: 6,
       total: 0,
       showTotal: (total, range) => `Tổng cộng: ${total} người dùng`,
-      position: ['bottomCenter']  // Thêm dòng này
+      position: ['bottomCenter']
     });
-    const router = useRouter();
+    
+    // Hiển thị các modal
     const showAddUserPopup = ref(false);
     const showUserDetailPopup = ref(false);
     const showEditUserPopup = ref(false);
-
     const selectedUserId = ref(null);
 
+    // Mở modal thêm người dùng
     const openAddUserPopup = () => {
       showAddUserPopup.value = true;
     };
-    const closeAddUserPopup = () => {
-      showAddUserPopup.value = false;
-    };
 
+    // Mở modal chỉnh sửa người dùng
     const openEditUserPopup = (record) => {
       selectedUserId.value = record.id;
       showEditUserPopup.value = true;
     };
 
-    // Cấu hình các cột cho bảng
+    // Cấu hình các cột hiển thị trong bảng
     const columns = [
       { title: "STT", key: "stt" },
       { title: "ID", dataIndex: "id", key: "id" },
@@ -186,10 +191,11 @@ export default {
       { title: "Hành động", key: "action", width: 140 },
     ];
 
-    // Fetch danh sách người dùng từ API
+    // Lấy danh sách người dùng từ API
     const fetchUsers = async () => {
       loading.value = true;
       try {
+        // Tạo tham số truy vấn
         const params = {
           start: Math.max(pagination.value.current - 1, 0),
           limit: pagination.value.pageSize,
@@ -200,6 +206,7 @@ export default {
 
         const res = await getListUser(params);
 
+        // Xử lý dữ liệu trả về
         if (res.data && res.data.items) {
           users.value = res.data.items;
           pagination.value.total = res.data.total || 0;
@@ -220,23 +227,25 @@ export default {
       fetchUsers();
     };
 
-    //  Xử lý khi người dùng tìm kiếm
+    // Xử lý tìm kiếm
     const handleSearch = () => {
       pagination.value.current = 1;
       fetchUsers();
     };
 
+    // Xử lý thay đổi bộ lọc
     const handleFilterChange = () => {
       pagination.value.current = 1;
       fetchUsers();
     };
 
+    // Xem chi tiết người dùng
     const viewUser = (record) => {
       selectedUserId.value = record.id;
       showUserDetailPopup.value = true;
     };
 
-    // Xác nhận và xóa người dùng
+    // Xác nhận xóa người dùng
     const confirmDelete = (record) => {
       Modal.confirm({
         title: "Xóa người dùng",
@@ -255,6 +264,7 @@ export default {
       });
     };
 
+    // Khởi tạo - tải danh sách người dùng
     onMounted(fetchUsers);
 
     return {
@@ -273,7 +283,6 @@ export default {
       viewUser,
       showAddUserPopup,
       openAddUserPopup,
-      closeAddUserPopup,
       showUserDetailPopup,
       selectedUserId,
       showEditUserPopup,
