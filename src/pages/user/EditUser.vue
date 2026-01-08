@@ -143,7 +143,17 @@ export default {
             // Lấy thông tin người dùng
             const response = await getUserById(props.userId);
             const responseData = response?.data || response?.result || response;
-            userForm.value = { ...responseData };
+            
+            // Cập nhật form với dữ liệu người dùng
+            userForm.value = {
+              id: responseData.id,
+              email: responseData.email,
+              fullName: responseData.fullName,
+              address: responseData.address,
+              phone: responseData.phone,
+              block: responseData.block,
+              roleId: responseData.role?.roleId || "", // Lấy roleId từ object role
+            };
 
             // Lấy avatar
             const avatarRes = await getAvatar(props.userId);
@@ -166,6 +176,12 @@ export default {
       // Kiểm tra ID
       if (!userForm.value.id) {
         message.error("Lỗi: ID người dùng không tồn tại!");
+        return;
+      }
+
+      // Kiểm tra các trường bắt buộc
+      if (!userForm.value.email || !userForm.value.fullName || !userForm.value.phone) {
+        message.error("Vui lòng điền đầy đủ thông tin bắt buộc!");
         return;
       }
 
